@@ -5,12 +5,16 @@ Demo jogável de corrida de galgos virtuais, feita para análise jurídica do mo
 **Créditos fictícios, sem valor e sem saque.** Não há integração com USDT, Pix ou qualquer pagamento real.
 
 ## O que tem
-- Pacotes com raridade sorteada (Comum, Raro, Épico, Lendário)
-- Galgos com 6 atributos, ração e treino, limite de 3 corridas por dia
-- Corrida com 6 boxes, atributos dos rivais escondidos até a chegada
-- Apostas de espectadores (pote único)
-- Mercado de compra e venda, oferta pelo vencedor
+- **Corrida ao vivo em 3D** (Three.js): pista noturna com refletores, boxes que abrem, lebre mecânica, apresentação dos galgos, câmeras TV/aérea/pista e narração
+- **Meu canil** e **ficha do galgo** com retrato 3D, condição, fadiga, afiação, estilo, distância e piso preferidos, histórico
+- **Treino** por atributo com barra de progresso
+- **Programa de corridas** por grade (A1 a A6), com tratador e instruções de prova (largada, esforço, posição)
+- **Leilão** com lances ao vivo contra outros jogadores
+- **Pacotes** com chances publicadas
+- **Instalações** do canil com obras (vagas, pista de treino, clínica, cozinha)
 - Aba **Fluxo do dinheiro** com as taxas da plataforma e o extrato da sessão
+
+O progresso fica salvo no navegador.
 
 ## Rodar
 Abra `index.html` no navegador. Ou ative o GitHub Pages (Settings → Pages → branch `main`).

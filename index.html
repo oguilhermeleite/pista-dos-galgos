@@ -6,102 +6,227 @@
 <title>Pista dos Galgos</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
 <style>
-/* Layout: noite de pista — barra de placar fixa no topo, abas, um painel por vez; a pista de areia é o momento visual. Tema escuro único, de propósito. */
+/* Layout: transmissão de corrida noturna — barra de placar fixa, navegação em abas, painéis azul-royal; o palco 3D é o centro de tudo. Visual escuro único, de propósito. */
 :root{
-  --night:#0e1524; --panel:#162036; --panel2:#1d2a45; --line:#2b3a5c;
-  --sand:#d8b886; --sand-dk:#b8955f; --ink:#eef1f7; --mute:#8d9ab8;
-  --good:#4fbf7f; --bad:#e2575a; --warn:#e9b44c;
-  --t1:#d7263d; --t2:#1f6fd1; --t3:#f2f2f2; --t4:#1a1a1a; --t5:#f28c28;
-  --display:"Archivo Black","Arial Black",system-ui,sans-serif;
-  --body:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --bg:#071431; --bg2:#0b1d47; --panel:#0f2862; --panel2:#15367d; --line:#244a98; --line2:#1a3a7f;
+  --ink:#f3f6ff; --mute:#9fb3e0; --dim:#6f86bd;
+  --gold:#ffc83a; --gold-ink:#2a1c00; --red:#e8334c; --good:#3fdc98; --warn:#ffb44a;
+  --serif:"DM Serif Display",Georgia,"Times New Roman",serif;
+  --cond:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-html,body{background:var(--night);color:var(--ink)}
-body{font-family:var(--body);font-size:15px;line-height:1.45}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
-.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--panel);border-bottom:1px solid var(--line)}
-.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:12px}
-.logo{font-family:var(--display);font-size:20px;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
-.logo i{display:inline-flex;gap:2px}
-.logo i b{width:6px;height:18px;border-radius:2px}
-.demo{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:2px 6px}
-.bal{margin-left:auto;display:flex;align-items:center;gap:10px}
-.cr{font-family:var(--mono);font-weight:600;font-size:18px;font-variant-numeric:tabular-nums}
-.cr small{color:var(--mute);font-weight:400;font-size:11px;margin-left:3px}
-.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:0}
-.tab{background:none;border:0;color:var(--mute);font:600 14px var(--body);padding:10px 12px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
-.tab[aria-selected=true]{color:var(--ink);border-color:var(--sand)}
-main{padding-block:22px 60px}
-h2{font-family:var(--display);font-size:24px;text-transform:uppercase;letter-spacing:.3px;margin:0 0 4px;text-wrap:balance}
-.sub{color:var(--mute);margin:0 0 18px;max-width:62ch}
-.btn{font:600 14px var(--body);border-radius:8px;padding:9px 14px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer}
-.btn:hover{border-color:var(--sand)}
-.btn.pri{background:var(--sand);color:#1b1408;border-color:var(--sand)}
-.btn.pri:hover{background:#e6c897}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--body);font-size:14.5px;line-height:1.45;background:radial-gradient(1200px 500px at 70% -100px,#18408f 0%,transparent 60%),var(--bg)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg2)}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:linear-gradient(180deg,#0d2259,#0a1b47);border-bottom:1px solid var(--line2);box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-block:10px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--cond);font-weight:800;font-size:23px;letter-spacing:.04em;text-transform:uppercase;line-height:1}
+.logo .t{display:inline-grid;grid-template-columns:repeat(6,5px);gap:2px}
+.logo .t b{height:20px;border-radius:1px}
+.logo small{display:block;font:600 10px var(--mono);letter-spacing:.14em;color:var(--gold);margin-top:3px}
+.demo{font:700 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(255,200,58,.5);border-radius:4px;padding:3px 7px}
+.hstat{display:flex;gap:18px;margin-left:auto;align-items:center}
+.hs{display:flex;flex-direction:column;line-height:1.1}
+.hs span{font:700 10px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.hs b{font:700 17px var(--mono);font-variant-numeric:tabular-nums}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:0;color:var(--mute);font:700 15px var(--cond);letter-spacing:.06em;text-transform:uppercase;padding:9px 13px 11px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-current=true]{color:var(--ink);border-color:var(--gold)}
+.tab .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:6px;vertical-align:middle;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+main{padding-block:22px 70px}
+.eyebrow{font:700 11.5px var(--cond);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+h1,h2,h3{margin:0;font-weight:400}
+.h-serif{font-family:var(--serif);letter-spacing:.005em;line-height:1.05;text-wrap:balance}
+.h-xl{font-size:clamp(34px,6vw,54px)}
+.h-l{font-size:clamp(24px,3.6vw,32px)}
+.h-m{font-size:21px}
+.lead{color:var(--mute);max-width:64ch;margin:6px 0 0}
+.sect{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.sect .push{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.card{background:linear-gradient(180deg,var(--panel),#0d2459);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.card.flat{background:var(--panel)}
+.card h3{font:700 12px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+.btn{font:700 13.5px var(--body);border-radius:8px;padding:9px 14px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer;white-space:nowrap;transition:transform .08s,border-color .15s,background .15s}
+.btn:hover{border-color:#5d86d8}
+.btn:active{transform:translateY(1px)}
+.btn.gold{background:linear-gradient(180deg,#ffd768,var(--gold));color:var(--gold-ink);border-color:#ffd768;box-shadow:0 0 18px rgba(255,200,58,.25)}
+.btn.gold:hover{background:#ffe089}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+.btn.ghost{background:transparent}
 .btn.sm{padding:6px 10px;font-size:12.5px}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn:focus-visible,.tab:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--sand);outline-offset:2px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.dog{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.dhead{display:flex;align-items:center;gap:10px}
-.dhead canvas{flex:none}
-.dname{font-weight:700;font-size:16px;line-height:1.2}
-.rar{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
-.r-Comum{color:#a9b4cc}.r-Raro{color:#5aa7ff}.r-Épico{color:#c08bff}.r-Lendário{color:var(--warn)}
-.nota{margin-left:auto;text-align:right;font-family:var(--mono)}
-.nota b{display:block;font-size:22px;line-height:1}
-.nota span{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em}
-.stats{display:grid;gap:5px}
-.st{display:grid;grid-template-columns:34px 1fr 26px;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--mute)}
-.st .v{color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
-.bar{height:9px;border-radius:2px;background:var(--panel2);position:relative;overflow:hidden}
-.bar i{position:absolute;inset:0 auto 0 0;background:var(--sand)}
-.bar::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(5% - 1.5px),var(--panel) calc(5% - 1.5px) 5%)}
-.meta{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--mute)}
-.acts{display:flex;gap:6px;flex-wrap:wrap}
-.packs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:22px}
-.pack{border-radius:14px;padding:18px;border:1px solid var(--line);background:linear-gradient(160deg,var(--panel2),var(--panel));display:flex;flex-direction:column;gap:10px}
-.pack h3{font-family:var(--display);text-transform:uppercase;margin:0;font-size:19px}
-.odds{font-family:var(--mono);font-size:11.5px;color:var(--mute);display:grid;grid-template-columns:1fr auto;gap:2px 10px}
-.price{font-family:var(--mono);font-size:20px;font-weight:600}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn:focus-visible,.tab:focus-visible,select:focus-visible,input:focus-visible,.pick:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.chip{display:inline-flex;align-items:center;gap:5px;font:700 11px var(--cond);letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mute);white-space:nowrap}
+.chip.ok{color:var(--good);border-color:rgba(63,220,152,.45)}
+.chip.warn{color:var(--warn);border-color:rgba(255,180,74,.5)}
+.chip.bad{color:var(--red);border-color:rgba(232,51,76,.5)}
+.chip.gold{color:var(--gold);border-color:rgba(255,200,58,.5)}
+.r-Comum{color:#b9c6e6}.r-Raro{color:#5fb3ff}.r-Épico{color:#c69bff}.r-Lendário{color:var(--gold)}
+.grid{display:grid;gap:14px}
+.g-dogs{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.dogcard{display:flex;flex-direction:column;gap:12px;cursor:pointer;transition:border-color .15s,transform .15s}
+.dogcard:hover{border-color:#5d86d8;transform:translateY(-2px)}
+.dc-top{display:flex;gap:12px;align-items:center}
+.dc-top canvas{flex:none;background:linear-gradient(180deg,#1b3f8c,#11295f);border-radius:8px}
+.dc-name{font-family:var(--serif);font-size:21px;line-height:1.1}
+.dc-sub{font-size:12px;color:var(--mute)}
+.dc-n{margin-left:auto;text-align:right}
+.dc-n b{display:block;font:700 26px var(--mono);line-height:1}
+.dc-n span{font:700 10px var(--cond);letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.meters{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.meter span{display:flex;justify-content:space-between;font:600 10.5px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:3px}
+.meter span b{font-family:var(--mono);color:var(--ink);letter-spacing:0}
+.track{height:6px;background:#0a1d4b;border-radius:3px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--good);border-radius:3px}
+.stats{display:grid;gap:7px}
+.st{display:grid;grid-template-columns:96px 1fr 30px;align-items:center;gap:10px;font-size:12.5px;color:var(--mute)}
+.st .v{font:700 12.5px var(--mono);color:var(--ink);text-align:right}
+.bar{height:10px;border-radius:2px;background:#0a1d4b;position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#3d78ff,#7fb0ff)}
+.bar::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(5% - 2px),#0a1d4b calc(5% - 2px) 5%)}
+.prof-head{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;margin-bottom:6px}
+.prof-head .tiles{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-width:96px}
+.tile span{display:block;font:700 10px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.tile b{font:700 20px var(--mono);font-variant-numeric:tabular-nums}
+.subtabs{display:flex;gap:4px;border-bottom:1px solid var(--line2);margin:14px 0 16px;overflow-x:auto}
+.subtabs .tab{font-size:14px;padding:8px 12px}
+.pgrid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:14px}
+.stage{position:relative;width:100%;aspect-ratio:16/9;max-height:72vh;border-radius:12px;overflow:hidden;background:radial-gradient(circle at 50% 35%,#2a5bbd,#0b1d47);border:1px solid var(--line)}
+.stage canvas{display:block;width:100%;height:100%}
+.portrait-tag{position:absolute;left:14px;bottom:12px;font:700 11px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;font-size:13.5px}
+.kv dt{font:700 10.5px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);padding-top:2px}
+.kv dd{margin:0;font-weight:600}
+.cond{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.cond .tile b{font-size:22px}
+.cond .tile small{display:block;font-size:11px;color:var(--dim)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.nogl{display:grid;place-items:center;height:100%;color:var(--mute);font-size:13px;padding:20px;text-align:center}
+/* Programa */
+.raceRow{display:grid;grid-template-columns:64px minmax(0,1.6fr) repeat(3,minmax(0,.7fr)) auto;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line2)}
+.raceRow:last-child{border-bottom:0}
+.raceRow .hr{font:700 17px var(--mono)}
+.raceRow .nm{font-family:var(--serif);font-size:18px;line-height:1.15}
+.raceRow .ds{font-size:12px;color:var(--mute)}
+.raceRow .k span{display:block;font:700 10px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.raceRow .k b{font:700 14px var(--mono)}
+.raceRow .acts{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.entry{background:#0b2257;border-top:1px solid var(--line2);padding:16px;display:grid;gap:14px}
+.picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.pick{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:11px 12px;cursor:pointer;text-align:left;color:var(--ink);font:inherit}
+.pick[aria-pressed=true]{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.pick b{display:block;font-family:var(--serif);font-weight:400;font-size:16px}
+.pick small{display:block;color:var(--mute);font-size:12px;margin-top:2px}
+.pick .fee{font:700 12px var(--mono);color:var(--gold);margin-top:6px;display:block}
+label.f{display:flex;flex-direction:column;gap:5px;font:700 10.5px var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+select,input{font:500 14px var(--body);background:#0a1d4b;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0;letter-spacing:0;text-transform:none}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
-label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mute)}
-select,input{font:500 14px var(--body);background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
-.trackbox{margin-top:14px;border-radius:12px;overflow:hidden;border:1px solid var(--sand-dk);background:var(--sand)}
-#track{display:block;width:100%}
-.lanes{width:100%;border-collapse:collapse;font-size:13px;margin-top:14px}
-.tablewrap{overflow-x:auto}
-.lanes th{font-family:var(--mono);font-size:10.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
-.lanes td{padding:8px;border-bottom:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
-.lanes td.n{font-family:var(--mono)}
-.trap{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:4px;font:700 12px var(--mono)}
-.mine{color:var(--sand);font-weight:700}
-.hidden{color:var(--mute);font-family:var(--mono)}
-.res{margin-top:14px;display:grid;gap:10px}
-.callout{border-left:3px solid var(--sand);padding:10px 12px;background:var(--panel2);border-radius:0 8px 8px 0;font-size:13.5px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
-.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
-.kpi span{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
-.kpi b{display:block;font-family:var(--mono);font-size:22px;margin-top:4px;font-variant-numeric:tabular-nums}
-.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-bottom:18px}
-.rule h4{margin:0 0 6px;font-size:14px}
-.rule ul{margin:0;padding-left:18px;color:var(--mute);font-size:13px;display:grid;gap:3px}
-.rule b{color:var(--ink)}
-.pos{color:var(--good)}.neg{color:var(--bad)}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--night);padding:10px 16px;border-radius:10px;font-weight:600;font-size:14px;z-index:20;max-width:calc(100% - 32px)}
+/* Ao vivo */
+.racebar{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.racebar .tiles{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.livegrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:start}
+.ovl{position:absolute;inset:0;pointer-events:none}
+.lt{position:absolute;left:14px;right:14px;bottom:14px;display:flex;align-items:stretch;max-width:560px;transform:translateY(0);transition:opacity .3s,transform .3s}
+.lt.off{opacity:0;transform:translateY(12px)}
+.lt .num{display:grid;place-items:center;width:52px;font:700 26px var(--mono);border-radius:8px 0 0 8px}
+.lt .body{flex:1;background:linear-gradient(90deg,#1546b4,#0f2f86);padding:8px 14px;border-radius:0 8px 8px 0;border-top:2px solid var(--gold);min-width:0}
+.lt .body small{display:block;font:700 10px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.lt .body b{display:block;font-family:var(--serif);font-weight:400;font-size:22px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lt .body span{display:block;font-size:12px;color:#c9d6f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.headline{position:absolute;left:16px;top:14px;font:800 clamp(28px,6vw,64px)/.9 var(--cond);text-transform:uppercase;color:var(--gold);text-shadow:0 3px 18px rgba(0,0,0,.55);letter-spacing:.01em;transition:opacity .4s}
+.headline.off{opacity:0}
+.posStrip{position:absolute;right:12px;top:12px;display:flex;gap:4px;background:rgba(7,20,49,.72);padding:5px;border-radius:8px;backdrop-filter:blur(4px)}
+.posStrip .trap{width:24px;height:24px;font-size:12px}
+.distLeft{position:absolute;right:12px;top:48px;font:700 12px var(--mono);background:rgba(7,20,49,.72);padding:3px 8px;border-radius:6px}
+.ticker{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-top:10px;min-height:42px}
+.ticker .eyebrow{flex:none}
+.ticker p{margin:0;font-size:13.5px;min-width:0}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.ctrls .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.ctrls .seg button{background:var(--panel);border:0;color:var(--mute);font:700 12px var(--cond);letter-spacing:.1em;text-transform:uppercase;padding:8px 11px;cursor:pointer}
+.ctrls .seg button[aria-pressed=true]{background:var(--panel2);color:var(--ink)}
+.rc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.rc-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line2)}
+.rc-row:last-child{border-bottom:0}
+.rc-row.me .rc-name{color:var(--gold)}
+.rc-name{font-family:var(--serif);font-size:16px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-sub{font-size:11.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-r{display:flex;gap:6px;align-items:center}
+.odd{font:700 12px var(--mono);background:#0a1d4b;border:1px solid var(--line);border-radius:6px;padding:4px 7px;min-width:52px;text-align:center}
+.pos{font:700 12px var(--mono);background:var(--red);color:#fff;border-radius:6px;padding:4px 7px;min-width:34px;text-align:center}
+.trap{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:5px;font:700 13px var(--mono);flex:none}
+.betbox{margin-top:12px;padding-top:12px;border-top:1px solid var(--line2);display:grid;gap:10px}
+.res{display:grid;gap:8px}
+.callout{border-left:3px solid var(--gold);padding:10px 12px;background:#0b2257;border-radius:0 8px 8px 0;font-size:13.5px}
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+.tw{overflow-x:auto}
+table.t th{font:700 10.5px var(--cond);letter-spacing:.12em;color:var(--mute);text-transform:uppercase;text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.t td{padding:9px 8px;border-bottom:1px solid var(--line2);white-space:nowrap;font-variant-numeric:tabular-nums}
+table.t td.n{font-family:var(--mono)}
+table.t td.wrap{white-space:normal;min-width:200px}
+.pos-c{color:var(--good)}.neg-c{color:var(--red)}
+/* Leilão */
+.lgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px;align-items:start}
+.lot{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer;color:var(--ink);font:inherit;text-align:left;width:100%}
+.lot[aria-pressed=true]{border-color:var(--gold)}
+.lot b{font-family:var(--serif);font-weight:400;font-size:17px;display:block}
+.lot small{color:var(--mute);font-size:12px}
+.ring{text-align:center;display:grid;gap:14px}
+.bidbox{border:1px solid var(--line);border-radius:12px;padding:18px;background:#0a1d4b}
+.bidbox .cur{font:700 clamp(32px,5vw,46px) var(--mono);color:var(--gold);line-height:1}
+.bidbox .lead{margin:6px auto 0;font-size:13px}
+.timer{height:6px;background:#0a1d4b;border-radius:3px;overflow:hidden;border:1px solid var(--line)}
+.timer i{display:block;height:100%;background:var(--gold);transition:width .3s linear}
+.bids{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.blog{text-align:left;font-size:12.5px;color:var(--mute);display:grid;gap:4px;max-height:150px;overflow:auto}
+/* Pacotes */
+.packs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:22px}
+.pack{position:relative;overflow:hidden;border-radius:14px;padding:20px;border:1px solid var(--line);background:linear-gradient(150deg,#1d4fb8,#0d2459 60%);display:flex;flex-direction:column;gap:10px}
+.pack.prem{background:linear-gradient(150deg,#6a4b06,#2a1d00 55%,#0d2459);border-color:#8a6a14}
+.pack .ph{font:800 30px/.9 var(--cond);text-transform:uppercase}
+.odds{font:500 12px var(--mono);color:var(--mute);display:grid;grid-template-columns:1fr auto;gap:3px 10px}
+.price{font:700 22px var(--mono)}
+.reveal{animation:pop .5s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes pop{from{transform:scale(.85) rotateY(80deg);opacity:0}to{transform:none;opacity:1}}
+/* Instalações */
+.fgrid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px;align-items:start}
+.map{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#3f7a35}
+.map svg{display:block;width:100%;height:auto}
+.fac{display:grid;gap:8px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.fac:last-child{border-bottom:0}
+.fac-h{display:flex;align-items:center;gap:8px}
+.fac-h b{font-family:var(--serif);font-weight:400;font-size:18px}
+.lvl{display:inline-flex;gap:3px;margin-left:auto}
+.lvl i{width:16px;height:6px;border-radius:2px;background:#0a1d4b;border:1px solid var(--line)}
+.lvl i.on{background:var(--gold);border-color:var(--gold)}
+/* Fluxo */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:18px}
+.rules ul{margin:0;padding-left:18px;color:var(--mute);font-size:13px;display:grid;gap:4px}
+.rules b{color:var(--ink)}
+.rules h4{margin:0 0 8px;font-family:var(--serif);font-weight:400;font-size:18px}
 .empty{color:var(--mute);padding:26px;text-align:center;border:1px dashed var(--line);border-radius:12px}
-.reveal{animation:pop .45s ease both}
-@keyframes pop{from{transform:scale(.92) rotateY(70deg);opacity:.2}to{transform:none;opacity:1}}
-@media (prefers-reduced-motion:reduce){.reveal{animation:none}}
-.secthead{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-.secthead .sub{margin:0}
-.secthead .btn{margin-left:auto}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--gold);color:var(--gold-ink);padding:11px 18px;border-radius:10px;font-weight:700;font-size:14px;z-index:40;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+@media (max-width:900px){
+  .pgrid,.livegrid,.lgrid,.fgrid{grid-template-columns:1fr}
+  .raceRow{grid-template-columns:52px minmax(0,1fr) auto;row-gap:8px}
+  .raceRow .k{display:none}
+  .raceRow .acts{grid-column:1/-1;justify-content:flex-start}
+  .hstat{gap:12px}
+  .stage{aspect-ratio:4/3}
+}
+@media (prefers-reduced-motion:reduce){.reveal,.tab .live-dot{animation:none}.dogcard,.btn{transition:none}}
 </style>
 </head>
 <body>
@@ -109,333 +234,661 @@ select,input{font:500 14px var(--body);background:var(--panel2);color:var(--ink)
 <header>
   <div class="wrap">
     <div class="top">
-      <div class="logo"><i><b style="background:var(--t1)"></b><b style="background:var(--t2)"></b><b style="background:var(--t3)"></b><b style="background:var(--t4);outline:1px solid #555"></b><b style="background:var(--t5)"></b></i>Pista dos Galgos</div>
-      <span class="demo" title="Créditos fictícios, sem valor e sem saque">Demo · créditos sem valor</span>
-      <div class="bal">
-        <div class="cr" id="bal">0<small>CR</small></div>
-        <button class="btn sm" data-act="topup" id="topup">+500 de teste</button>
+      <div class="logo"><span class="t"><b style="background:#d7263d"></b><b style="background:#1f6fd1"></b><b style="background:#f2f2f2"></b><b style="background:#111;outline:1px solid #555"></b><b style="background:#f28c28"></b><b style="background:repeating-linear-gradient(0deg,#111 0 4px,#f2f2f2 4px 8px)"></b></span><div>Pista dos Galgos<small>Corridas noturnas</small></div></div>
+      <span class="demo">Demo · créditos sem valor</span>
+      <div class="hstat">
+        <div class="hs"><span>Noite</span><b id="hDay">1</b></div>
+        <div class="hs"><span>Saldo</span><b id="hBal">0</b></div>
+        <button class="btn sm" data-act="topup">+500 de teste</button>
       </div>
     </div>
-    <nav class="tabs" role="tablist" id="tabs"></nav>
+    <nav class="tabs" id="nav" aria-label="Seções"></nav>
   </div>
 </header>
 <main class="wrap" id="main"></main>
 <div class="toast" id="toast" hidden></div>
 
 <script>
-// ===== Configuração do fluxo de dinheiro (é isso que o advogado vai olhar) =====
-const CFG = {
-  inscricao: 50,          // CR por cão na corrida
-  rakeCorrida: 0.10,      // plataforma fica com 10% das inscrições
-  premio1: 0.70, premio2: 0.30, // divisão do restante
-  rakeAposta: 0.10,       // plataforma: 10% do pote de apostas
-  donoVencedor: 0.05,     // dono do cão vencedor: 5% do pote de apostas
-  taxaMercado: 0.05,      // 5% sobre cada venda no mercado
-  corridasPorDia: 3,
-  racao: 30, treino: 60
-};
-const STATS = [["vel","VEL","Velocidade"],["est","EST","Estamina"],["for","FOR","Força"],["res","RES","Resistência"],["lar","LAR","Largada"],["foc","FOC","Foco"]];
-const RAR = {Comum:{min:28,max:55},Raro:{min:42,max:68},"Épico":{min:56,max:82},"Lendário":{min:70,max:94}};
-const PACKS = [
-  {id:"basico",nome:"Pacote Canil",preco:120,qtd:1,odds:{Comum:70,Raro:25,"Épico":4.5,"Lendário":0.5}},
-  {id:"premium",nome:"Pacote Campeão",preco:340,qtd:2,odds:{Comum:35,Raro:45,"Épico":16,"Lendário":4}}
-];
-const TRAPS = [
-  {bg:"#d7263d",fg:"#fff"},{bg:"#1f6fd1",fg:"#fff"},{bg:"#f2f2f2",fg:"#111"},
-  {bg:"#1a1a1a",fg:"#fff"},{bg:"#f28c28",fg:"#111"},{bg:"stripe",fg:"#d7263d"}
-];
-const COATS = ["#8a5a3b","#c9a27a","#3b3433","#a8a29e","#6b4423","#e5ddd0","#5a4a42"];
-const N1 = ["Relâmpago","Faísca","Trovão","Bala","Cometa","Furacão","Sombra","Pimenta","Tufão","Flecha","Rajada","Vulto","Ventania","Brasa"];
-const N2 = ["do Sul","Dourado","Negro","Veloz","de Prata","Bravo","Real","Rubro","da Serra","Ligeiro"];
-const PLAYERS = ["lobo_77","marina.bet","zeca_pista","ana_galgos","rodrigo09","kennel_br","tio_bento","juju.race","duda_fx","caio_k9"];
+"use strict";
+// ================== PARÂMETROS DO DINHEIRO (o que o advogado avalia) ==================
+const CFG={rakeCorrida:.10,premio1:.70,premio2:.30,rakeAposta:.10,donoVencedor:.05,taxaVenda:.05,corridasDia:2,treinosDia:2,racao:30,treino:45,fadigaMax:70};
+// ================== DADOS DO MUNDO ==================
+const STATS=[["vel","Velocidade"],["est","Estamina"],["for","Força"],["res","Resistência"],["lar","Largada"],["foc","Foco"]];
+const RAR={Comum:{min:30,max:55},Raro:{min:42,max:68},"Épico":{min:56,max:82},"Lendário":{min:70,max:94}};
+const COATS=[{n:"Preto",c:"#26211f"},{n:"Tigrado",c:"#7a5532",s:"#2b1d14"},{n:"Fulvo",c:"#c99a62"},{n:"Azul",c:"#717986"},{n:"Branco e preto",c:"#ece6dc",s:"#1e1b1a"},{n:"Vermelho",c:"#9b4a26"}];
+const TRAPS=[{bg:"#d7263d",fg:"#fff"},{bg:"#1f6fd1",fg:"#fff"},{bg:"#f2f2f2",fg:"#111"},{bg:"#151515",fg:"#fff"},{bg:"#f28c28",fg:"#111"},{bg:"stripe",fg:"#d7263d"}];
+const GRADES=[{g:"A1",min:72,fee:250},{g:"A2",min:64,fee:180},{g:"A3",min:57,fee:130},{g:"A4",min:50,fee:90},{g:"A5",min:43,fee:60},{g:"A6",min:0,fee:40}];
+const TRACKS=["Estádio Vila Rica","Pista da Serra","Arena Litoral","Parque das Araucárias"];
+const PISOS=["Rápido","Normal","Pesado"];
+const N1=["Relâmpago","Faísca","Trovão","Bala","Cometa","Furacão","Sombra","Pimenta","Tufão","Flecha","Rajada","Vulto","Ventania","Brasa","Corisco","Estopim","Vendaval","Pólvora"];
+const N2=["do Sul","Dourado","Negro","Veloz","de Prata","Bravo","Real","Rubro","da Serra","Ligeiro","do Vale","Noturno"];
+const PLAYERS=["lobo_77","marina.bet","zeca_pista","ana_galgos","rodrigo09","kennel_br","tio_bento","juju.race","duda_fx","caio_k9","bia.trap1","nando_lebre"];
+const HANDLERS=[["Seu Jorge Almeida","Veterano, ótimo na largada"],["Carla Menezes","Fase excelente, 9 vitórias no mês"],["Tonho Ribeiro","Bom com galgos novos"],["Patrícia Lemos","Especialista em pista pesada"],["Mauro Sá","Calma no box, cão concentrado"]];
+const FAC={canil:{n:"Canil",fx:l=>`${2+l*2} vagas para galgos`,cost:[0,600,1500,3200],dias:[0,1,2,3]},pista:{n:"Pista de treino",fx:l=>`Treino rende +${(l-1)*8}% de progresso`,cost:[0,500,1300,2800],dias:[0,1,2,3]},clinica:{n:"Clínica veterinária",fx:l=>`Recupera ${15+l*10} de fadiga por noite`,cost:[0,550,1400,3000],dias:[0,1,2,3]},cozinha:{n:"Cozinha de ração",fx:l=>`Ração dá até +${2+l} pontos`,cost:[0,400,1100,2400],dias:[0,1,2,2]}};
+const PACKS=[{id:"canil",nome:"Pacote Canil",preco:150,qtd:1,odds:{Comum:68,Raro:26,"Épico":5,"Lendário":1}},{id:"campeao",nome:"Pacote Campeão",preco:420,qtd:2,odds:{Comum:30,Raro:46,"Épico":19,"Lendário":5}}];
 
-let uid = 1;
-const rnd = (a,b)=>a+Math.random()*(b-a);
-const ri = (a,b)=>Math.floor(rnd(a,b+1));
-const pick = a=>a[Math.floor(Math.random()*a.length)];
-const fmt = n=>Math.round(n).toLocaleString("pt-BR");
+// ================== UTIL ==================
+const $=s=>document.querySelector(s);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const ri=(a,b)=>Math.floor(rnd(a,b+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const fmt=n=>Math.round(n).toLocaleString("pt-BR");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2800)}
+function trapBg(i){const t=TRAPS[i];return t.bg==="stripe"?"repeating-linear-gradient(0deg,#111 0 4px,#f2f2f2 4px 8px)":t.bg}
+function trapEl(i){const t=TRAPS[i];return `<span class="trap" style="background:${trapBg(i)};color:${t.fg};${i===3?"box-shadow:inset 0 0 0 1px #555":""}">${i+1}</span>`}
 
-function rollRarity(odds){let r=Math.random()*100;for(const [k,v] of Object.entries(odds)){if((r-=v)<=0)return k}return "Comum"}
-function makeDog(rar,owner){
-  const r=RAR[rar], s={};
-  STATS.forEach(([k])=>s[k]=ri(r.min,r.max));
-  return {id:uid++,nome:pick(N1)+" "+pick(N2),rar,owner,s,coat:pick(COATS),hoje:0,vit:0,corridas:0};
+// ================== ESTADO ==================
+const KEY="pista-dos-galgos-v2";
+let S;
+function rollRar(odds){let r=Math.random()*100;for(const[k,v]of Object.entries(odds)){if((r-=v)<=0)return k}return"Comum"}
+function makeDog(rar,owner,band){
+  const r=RAR[rar],s={};STATS.forEach(([k])=>s[k]=ri(r.min,r.max));
+  if(band){const n=nota({s});const shift=band-n;STATS.forEach(([k])=>s[k]=clamp(Math.round(s[k]+shift+rnd(-3,3)),20,96))}
+  return{id:S?++S.uid:1,nome:pick(N1)+" "+pick(N2),rar,owner,s,sexo:pick(["Macho","Fêmea"]),idade:ri(2,4),coat:ri(0,COATS.length-1),fat:0,cond:ri(88,100),afi:ri(60,80),hoje:0,trein:0,prog:{},hist:[],vit:0,corr:0,forma:Array.from({length:3},()=>ri(1,6)).join("-")};
 }
-const nota = d=>Math.round(d.s.vel*.3+d.s.est*.2+d.s.for*.1+d.s.res*.15+d.s.lar*.12+d.s.foc*.13);
-const valor = d=>Math.round(nota(d)**2/9);
+function nota(d){const s=d.s;return Math.round(s.vel*.3+s.est*.18+s.for*.1+s.res*.14+s.lar*.14+s.foc*.14)}
+function valor(d){return Math.round(nota(d)**2/7)}
+function grade(d){const n=nota(d);return GRADES.find(g=>n>=g.min)}
+function gi(g){return GRADES.findIndex(x=>x.g===g)}
+function estilo(d){return d.s.lar>d.s.est+8?"Puxador, gosta de liderar":d.s.est>d.s.lar+8?"Vem de trás no final":"Versátil"}
+function distIdeal(d){return d.s.est>d.s.vel+4?525:d.s.lar>d.s.est+6?380:480}
+function pisoPref(d){return d.s.for>62?"Pesado":d.s.vel>60?"Rápido":"Normal"}
+function lv(k){const f=S.fac[k];return f.ate>S.dia?f.lvl-1:f.lvl}
+function capacidade(){return 2+lv("canil")*2}
+function status(d){if(d.fat>CFG.fadigaMax)return["bad","Precisa descansar"];if(d.hoje>=CFG.corridasDia)return["warn","Correu o limite hoje"];if(entryOf(d))return["gold","Inscrito"];return["ok","Pronto para correr"]}
+function entryOf(d){return S.races.find(r=>r.status!=="fim"&&r.mine.some(m=>m.dogId===d.id))}
 
-// ===== Estado =====
-const S = {cr:1500,dia:1,dogs:[],ledger:[],plat:{corrida:0,aposta:0,mercado:0,loja:0},premios:0,market:[],race:null,tab:"canil",lastPack:[]};
-S.dogs.push(makeDog("Comum","voce"));
-function seedMarket(){S.market=Array.from({length:6},()=>{const d=makeDog(rollRarity({Comum:40,Raro:40,"Épico":17,"Lendário":3}),pick(PLAYERS));return {dog:d,preco:Math.round(valor(d)*rnd(.9,1.3))}})}
-seedMarket();
-
-function log(tipo,desc,valorUser,platKey,platVal){
-  S.cr+=valorUser;
-  if(platKey){S.plat[platKey]+=platVal}
-  S.ledger.unshift({dia:S.dia,tipo,desc,valor:valorUser,plat:platVal||0});
+function fresh(){
+  S={v:2,uid:1,cr:2500,dia:1,dogs:[],ledger:[],plat:{loja:0,servicos:0,corrida:0,aposta:0,mercado:0},premios:0,races:[],lots:[],auction:null,fac:{canil:{lvl:1,ate:0},pista:{lvl:1,ate:0},clinica:{lvl:1,ate:0},cozinha:{lvl:1,ate:0}},view:"canil",sel:null,ptab:"geral",lastPack:[],open:null};
+  const d=makeDog("Raro","voce");d.nome="Faísca Real";S.dogs.push(d);
+  genDay();genLots();
 }
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&j.v===2){S=j;return true}}catch(e){}return false}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function genDay(){
+  S.races=Array.from({length:8},(_,i)=>{const G=GRADES[[5,4,4,3,3,2,1,0][i]];const m=30+i*15;
+    return{id:++S.uid,hora:`${18+Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`,pista:pick(TRACKS),dist:pick([380,480,480,525]),grade:G.g,fee:G.fee,piso:pick(PISOS),mine:[],npc:null,crowd:null,bet:null,status:"aberta",res:null}});
+}
+function genLots(){S.lots=Array.from({length:4},()=>{const seller=Math.random()<.5?"Criador oficial":pick(PLAYERS);const d=makeDog(rollRar({Comum:30,Raro:42,"Épico":22,"Lendário":6}),seller);return{id:++S.uid,dog:d,seller,base:Math.round(valor(d)*rnd(.55,.75)/10)*10}})}
+function log(tipo,desc,v,key,pv){S.cr+=v;if(key)S.plat[key]+=pv;S.ledger.unshift({dia:S.dia,tipo,desc,v,plat:key?pv:0});if(S.ledger.length>300)S.ledger.length=300}
+function spend(v,tipo,desc,key){if(S.cr<v){toast("Saldo insuficiente. Use +500 de teste.");return false}log(tipo,desc,-v,key,key?v:0);return true}
 
-// ===== UI util =====
-const $ = s=>document.querySelector(s);
-let tt;
-function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2600)}
-function trapEl(i){const t=TRAPS[i];const bg=t.bg==="stripe"?"repeating-linear-gradient(0deg,#111 0 4px,#f2f2f2 4px 8px)":t.bg;return `<span class="trap" style="background:${bg};color:${t.fg};${i===3?"outline:1px solid #555":""}">${i+1}</span>`}
-function bars(d){return `<div class="stats">${STATS.map(([k,ab,full])=>`<div class="st" title="${full}"><span>${ab}</span><div class="bar"><i style="width:${d.s[k]}%"></i></div><span class="v">${d.s[k]}</span></div>`).join("")}</div>`}
-
-function drawDog(ctx,x,y,coat,trap,num,ph,sc=1){
-  ctx.save();ctx.translate(x,y);ctx.scale(sc,sc);
-  const sw=Math.sin(ph)*5;
-  ctx.strokeStyle=coat;ctx.lineWidth=2.4;ctx.lineCap="round";
-  // pernas
-  [[-11,sw],[-8,-sw],[9,-sw],[12,sw]].forEach(([lx,s])=>{ctx.beginPath();ctx.moveTo(lx,2);ctx.lineTo(lx+s,11);ctx.stroke()});
-  // cauda
-  ctx.beginPath();ctx.moveTo(-15,-1);ctx.quadraticCurveTo(-24,2,-27,-3+sw*.3);ctx.stroke();
-  // corpo
-  ctx.fillStyle=coat;ctx.beginPath();ctx.ellipse(0,-1,15,5.5,0,0,Math.PI*2);ctx.fill();
-  // pescoço e cabeça
-  ctx.beginPath();ctx.moveTo(11,-3);ctx.lineTo(17,-9);ctx.lineWidth=4;ctx.stroke();
-  ctx.beginPath();ctx.ellipse(20,-10,5,3.2,.15,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.moveTo(23,-10);ctx.lineTo(28,-8.5);ctx.lineWidth=2.6;ctx.stroke();
-  ctx.beginPath();ctx.moveTo(17,-12);ctx.lineTo(15,-16);ctx.lineWidth=2;ctx.stroke();
-  // colete
-  const t=TRAPS[trap];
-  if(t.bg==="stripe"){for(let i=0;i<4;i++){ctx.fillStyle=i%2?"#f2f2f2":"#111";ctx.fillRect(-8,-6.5+i*2.4,15,2.4)}}
-  else{ctx.fillStyle=t.bg;ctx.fillRect(-8,-6.5,15,9.6)}
-  ctx.fillStyle=t.fg;ctx.font="bold 7.5px JetBrains Mono, monospace";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(num,-.5,-1.5);
+// ================== RETRATO 2D (miniaturas) ==================
+function draw2D(ctx,x,y,coat,sc){
+  ctx.save();ctx.translate(x,y);ctx.scale(sc,sc);const c=COATS[coat];
+  ctx.strokeStyle=c.c;ctx.fillStyle=c.c;ctx.lineCap="round";
+  ctx.lineWidth=2.6;[[-11,3],[-8,-2],[9,-3],[12,2]].forEach(([lx,s])=>{ctx.beginPath();ctx.moveTo(lx,1);ctx.lineTo(lx+s,12);ctx.stroke()});
+  ctx.beginPath();ctx.moveTo(-15,-1);ctx.quadraticCurveTo(-24,3,-28,-1);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(0,-1,15.5,5.6,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(7,0,8,6.4,.2,0,Math.PI*2);ctx.fill();
+  if(c.s){ctx.fillStyle=c.s;for(let i=-12;i<12;i+=4){ctx.fillRect(i,-5,1.6,8)}ctx.fillStyle=c.c}
+  ctx.lineWidth=4.4;ctx.beginPath();ctx.moveTo(11,-3);ctx.lineTo(17,-10);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(20,-11,5.2,3.3,.15,0,Math.PI*2);ctx.fill();
+  ctx.lineWidth=2.8;ctx.beginPath();ctx.moveTo(23,-11);ctx.lineTo(29,-9.5);ctx.stroke();
+  ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(17,-13);ctx.lineTo(14,-16);ctx.stroke();
   ctx.restore();
 }
-function avatar(d,trap=0){
-  const c=document.createElement("canvas");const dpr=window.devicePixelRatio||1;
-  c.width=64*dpr;c.height=40*dpr;c.style.width="64px";c.style.height="40px";
-  const ctx=c.getContext("2d");ctx.scale(dpr,dpr);drawDog(ctx,28,24,d.coat,trap,trap+1,.6,1.1);return c;
-}
-function mountAvatars(){document.querySelectorAll("[data-av]").forEach(el=>{const [id,trap]=el.dataset.av.split(":");const d=findDog(+id);if(d)el.replaceWith(avatar(d,+trap||0))})}
-function findDog(id){return S.dogs.find(d=>d.id===id)||S.market.map(m=>m.dog).find(d=>d.id===id)||(S.race&&S.race.lanes.map(l=>l.dog).find(d=>d.id===id))||S.lastPack.find(d=>d.id===id)}
+function thumbs(){document.querySelectorAll("canvas[data-thumb]").forEach(c=>{const coat=+c.dataset.thumb,w=+c.width,h=+c.height,dpr=devicePixelRatio||1;c.width=w*dpr;c.height=h*dpr;c.style.width=w+"px";c.style.height=h+"px";const x=c.getContext("2d");x.scale(dpr,dpr);draw2D(x,w/2-2,h/2+5,coat,w/64)})}
 
-// ===== Abas =====
-const TABS=[["canil","Meu canil"],["pacotes","Pacotes"],["corrida","Corrida"],["mercado","Mercado"],["fluxo","Fluxo do dinheiro"]];
-function renderTabs(){$("#tabs").innerHTML=TABS.map(([k,l])=>`<button class="tab" role="tab" aria-selected="${S.tab===k}" data-tab="${k}">${l}</button>`).join("")}
-
-function dogCard(d,acts,trap=0){
-  return `<article class="dog">
-    <div class="dhead"><span data-av="${d.id}:${trap}"></span><div style="min-width:0"><div class="dname">${d.nome}</div><div class="rar r-${d.rar}">${d.rar}</div></div>
-    <div class="nota"><b>${nota(d)}</b><span>nota</span></div></div>
-    ${bars(d)}
-    ${acts}
-  </article>`;
+// ================== MOTOR 3D ==================
+const T3=window.THREE;
+let REN=null,SCN=null,CAM=null,TICK=null,RAF=0,RO=null,NOGL=false;
+function renderer(){
+  if(REN||NOGL)return REN;
+  try{REN=new T3.WebGLRenderer({antialias:true,powerPreference:"high-performance"});REN.setPixelRatio(Math.min(2,devicePixelRatio||1));REN.shadowMap.enabled=true;REN.shadowMap.type=T3.PCFSoftShadowMap;REN.outputEncoding=T3.sRGBEncoding;REN.toneMapping=T3.ACESFilmicToneMapping;REN.toneMappingExposure=1.05}
+  catch(e){NOGL=true;REN=null}
+  return REN;
 }
+function attach3D(host,build){
+  stop3D();
+  if(!T3||!renderer()){host.innerHTML='<div class="nogl">O 3D não está disponível neste aparelho. A simulação continua funcionando normalmente.</div>';return false}
+  host.prepend(REN.domElement);
+  const o=build();SCN=o.scene;CAM=o.camera;TICK=o.tick;
+  const fit=()=>{const w=host.clientWidth||640,h=host.clientHeight||360;REN.setSize(w,h,false);REN.domElement.style.width="100%";REN.domElement.style.height="100%";CAM.aspect=w/h;CAM.updateProjectionMatrix()};
+  fit();RO=new ResizeObserver(fit);RO.observe(host);
+  let last=performance.now();
+  const loop=t=>{RAF=requestAnimationFrame(loop);const dt=Math.max(0,Math.min(.05,(t-last)/1000));last=t;if(TICK)TICK(dt);REN.render(SCN,CAM)};
+  RAF=requestAnimationFrame(loop);return true;
+}
+function stop3D(){cancelAnimationFrame(RAF);RAF=0;if(RO){RO.disconnect();RO=null}if(SCN){SCN.traverse(o=>{if(o.geometry)o.geometry.dispose();const m=o.material;if(m)(Array.isArray(m)?m:[m]).forEach(mm=>{if(mm.map)mm.map.dispose();mm.dispose()})});if(SCN.background&&SCN.background.dispose)SCN.background.dispose()}SCN=null;TICK=null}
+
+function cvTex(w,h,draw,rep){const c=document.createElement("canvas");c.width=w;c.height=h;draw(c.getContext("2d"),w,h);const t=new T3.CanvasTexture(c);t.encoding=T3.sRGBEncoding;t.anisotropy=4;if(rep){t.wrapS=t.wrapT=T3.RepeatWrapping;t.repeat.set(rep[0],rep[1])}return t}
+function skyTex(){return cvTex(4,512,(x,w,h)=>{const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,"#050c26");g.addColorStop(.42,"#14306e");g.addColorStop(.62,"#3d4f8f");g.addColorStop(.74,"#d98250");g.addColorStop(.8,"#f2b46a");g.addColorStop(1,"#2a3c2a");x.fillStyle=g;x.fillRect(0,0,w,h)})}
+function coatTex(coat){const c=COATS[coat];return cvTex(256,128,(x,w,h)=>{x.fillStyle=c.c;x.fillRect(0,0,w,h);if(c.n==="Tigrado"){x.strokeStyle=c.s;x.globalAlpha=.55;for(let i=0;i<46;i++){x.lineWidth=rnd(1.5,4);x.beginPath();const sx=rnd(0,w);x.moveTo(sx,0);x.bezierCurveTo(sx+rnd(-14,14),h*.3,sx+rnd(-14,14),h*.7,sx+rnd(-10,10),h);x.stroke()}}if(c.n==="Branco e preto"){x.fillStyle=c.s;for(let i=0;i<5;i++){x.beginPath();x.ellipse(rnd(0,w),rnd(0,h),rnd(20,46),rnd(16,34),rnd(0,3),0,Math.PI*2);x.fill()}}const n=x.getImageData(0,0,w,h);for(let i=0;i<n.data.length;i+=4){const k=rnd(-8,8);n.data[i]+=k;n.data[i+1]+=k;n.data[i+2]+=k}x.putImageData(n,0,0)})}
+function jacketTex(i,withNum){const t=TRAPS[i];return cvTex(256,160,(x,w,h)=>{if(t.bg==="stripe"){for(let y=0;y<h;y+=20){x.fillStyle=(y/20)%2?"#f2f2f2":"#111";x.fillRect(0,y,w,20)}}else{x.fillStyle=t.bg;x.fillRect(0,0,w,h)}if(withNum){if(t.bg==="stripe"){x.fillStyle="#f2f2f2";x.beginPath();x.arc(w/2,h/2,52,0,Math.PI*2);x.fill()}x.fillStyle=t.fg;x.font="900 104px Arial Black, Arial, sans-serif";x.textAlign="center";x.textBaseline="middle";x.fillText(i+1,w/2,h/2+6)}x.strokeStyle="rgba(255,255,255,.45)";x.lineWidth=6;x.strokeRect(3,3,w-6,h-6)})}
+
+function buildDog(dog,trap){
+  const g=new T3.Group(),u=g.userData;
+  const tex=coatTex(dog.coat);const mat=new T3.MeshStandardMaterial({map:tex,roughness:.55,metalness:.05});
+  const dark=new T3.MeshStandardMaterial({color:0x111111,roughness:.4});
+  const add=(geo,m,px,py,pz,rx=0,ry=0,rz=0,sx=1,sy=1,sz=1,parent=g)=>{const me=new T3.Mesh(geo,m);me.position.set(px,py,pz);me.rotation.set(rx,ry,rz);me.scale.set(sx,sy,sz);me.castShadow=true;parent.add(me);return me};
+  const torso=new T3.Group();g.add(torso);u.torso=torso;
+  add(new T3.CapsuleGeometry(.2,.62,8,16),mat,-.05,.66,0,0,0,Math.PI/2+.06,1,1,.82,torso);
+  add(new T3.SphereGeometry(.27,18,14),mat,.28,.6,0,0,0,0,1.05,1.15,.78,torso);
+  add(new T3.SphereGeometry(.21,16,12),mat,-.36,.68,0,0,0,0,1.1,1,.85,torso);
+  add(new T3.CylinderGeometry(.085,.13,.42,12),mat,.5,.86,0,0,0,-.82,1,1,1,torso);
+  const head=new T3.Group();head.position.set(.7,1.02,0);torso.add(head);u.head=head;
+  add(new T3.SphereGeometry(.12,16,12),mat,0,0,0,0,0,0,1.35,.95,.9,head);
+  add(new T3.ConeGeometry(.075,.3,12),mat,.24,-.03,0,0,0,-Math.PI/2,1,1,.85,head);
+  add(new T3.SphereGeometry(.025,8,6),dark,.39,-.025,0,0,0,0,1,1,1,head);
+  [-.06,.06].forEach(z=>{add(new T3.ConeGeometry(.045,.12,8),mat,-.08,.1,z,0,0,1.9,1,1,.6,head);add(new T3.SphereGeometry(.018,8,6),dark,.07,.03,z*1.25,0,0,0,1,1,1,head)});
+  if(trap>=0){const mz=new T3.Mesh(new T3.BoxGeometry(.22,.13,.14),new T3.MeshStandardMaterial({color:0x6b5a3a,wireframe:true,transparent:true,opacity:.6}));mz.position.set(.25,-.03,0);head.add(mz)}
+  const curve=new T3.CatmullRomCurve3([new T3.Vector3(-.55,.72,0),new T3.Vector3(-.82,.55,0),new T3.Vector3(-1.02,.42,0),new T3.Vector3(-1.2,.44,0)]);
+  add(new T3.TubeGeometry(curve,14,.028,6,false),mat,0,0,0,0,0,0,1,1,1,torso);
+  if(trap>=0){
+    const side=new T3.MeshStandardMaterial({map:jacketTex(trap,true),roughness:.7});const plain=new T3.MeshStandardMaterial({map:jacketTex(trap,false),roughness:.7});
+    const j=new T3.Mesh(new T3.BoxGeometry(.6,.4,.46),[plain,plain,plain,plain,side,side]);j.position.set(.0,.68,0);j.castShadow=true;torso.add(j);
+  }
+  u.legs=[];
+  [[.3,.12,0],[.3,-.12,0],[-.38,.12,1],[-.38,-.12,1]].forEach(([x,z,back])=>{
+    const hip=new T3.Group();hip.position.set(x,.64,z);g.add(hip);
+    add(new T3.CylinderGeometry(back?.095:.065,.045,.34,10),mat,0,-.17,0,0,0,0,1,1,1,hip);
+    const knee=new T3.Group();knee.position.y=-.34;hip.add(knee);
+    add(new T3.CylinderGeometry(.04,.03,.3,8),mat,0,-.15,0,0,0,0,1,1,1,knee);
+    add(new T3.SphereGeometry(.045,8,6),mat,.03,-.3,0,0,0,0,1.5,.7,1,knee);
+    u.legs.push({hip,knee,back:!!back,side:z>0?0:.35});
+  });
+  g.traverse(o=>{if(o.isMesh)o.castShadow=true});
+  return g;
+}
+function animDog(g,p,amp,walk){
+  const u=g.userData;
+  u.legs.forEach(L=>{const a=p+(L.back?Math.PI:0)+L.side;
+    const sw=walk?.45:.85;L.hip.rotation.z=Math.sin(a)*sw*amp;
+    L.knee.rotation.z=(L.back?1:-1)*Math.max(0,Math.cos(a))*(walk?.5:1.05)*amp});
+  u.torso.position.y=Math.abs(Math.sin(p))*(walk?.015:.06)*amp;
+  u.torso.rotation.z=Math.sin(p*2)*.03*amp;
+  u.head.rotation.z=Math.sin(p+1)*.06*amp;
+}
+
+// ----- cena do retrato -----
+function buildPortrait(dog){
+  const scene=new T3.Scene();
+  scene.background=cvTex(4,256,(x,w,h)=>{const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,"#0c2766");g.addColorStop(.6,"#2a5fc4");g.addColorStop(1,"#0b1d47");x.fillStyle=g;x.fillRect(0,0,w,h)});
+  const cam=new T3.PerspectiveCamera(32,1.6,.1,100);cam.position.set(2.1,1.15,3.7);cam.lookAt(0,.55,0);
+  scene.add(new T3.HemisphereLight(0xcfe0ff,0x2b3a6a,.75));
+  const key=new T3.DirectionalLight(0xffffff,1.05);key.position.set(3,6,4);key.castShadow=true;key.shadow.mapSize.set(1024,1024);scene.add(key);
+  const rim=new T3.DirectionalLight(0xffc06a,.8);rim.position.set(-4,3,-3);scene.add(rim);
+  const pod=new T3.Mesh(new T3.CylinderGeometry(2,2.1,.12,64),new T3.MeshStandardMaterial({color:0x7d5f3f,roughness:1}));pod.position.y=-.06;pod.receiveShadow=true;scene.add(pod);
+  const ring=new T3.Mesh(new T3.TorusGeometry(2.05,.025,8,80),new T3.MeshStandardMaterial({color:0xffc83a,emissive:0x664400}));ring.rotation.x=Math.PI/2;scene.add(ring);
+  const d=buildDog(dog,-1);scene.add(d);
+  let p=0,ang=0;
+  return{scene,camera:cam,tick:dt=>{p+=dt*4.2;ang+=dt*.22;animDog(d,p,1,true);d.position.set(Math.cos(ang*2.2)*.15,0,0);d.rotation.y=Math.sin(ang)*.9-.25}};
+}
+
+// ================== CORRIDA AO VIVO ==================
+let LIVE=null;
+const LANEZ=i=>-3.5+i*1.4;
+function instrMods(ins){const m={start:0,drain:1,speed:1,rail:false};if(ins.lar==="Explosiva"){m.start=.06;m.drain*=1.12}if(ins.lar==="Segurar"){m.start=-.04;m.drain*=.9}if(ins.esf==="Forçar"){m.speed*=1.035;m.drain*=1.25}if(ins.esf==="Poupar"){m.speed*=.975;m.drain*=.78}if(ins.pos==="Colar na cerca"){m.speed*=1.012;m.rail=true}if(ins.pos==="Por fora"){m.speed*=.995}return m}
+function prepareRace(r){
+  if(!r.npc){
+    const G=GRADES[gi(r.grade)];const band=G.min?G.min+ri(0,7):ri(36,44);
+    r.npc=[];const free=6-r.mine.length;
+    for(let i=0;i<free;i++){const d=makeDog(rollRar({Comum:40,Raro:40,"Épico":16,"Lendário":4}),pick(PLAYERS),band+ri(-4,4));r.npc.push({dog:d,handler:pick(HANDLERS)[0],ins:{lar:pick(["Explosiva","Normal","Normal","Segurar"]),esf:pick(["Normal","Normal","Forçar","Poupar"]),pos:pick(["Livre","Colar na cerca","Por fora"])}})}
+    // sorteio dos boxes
+    const lanes=[...Array(6).keys()].sort(()=>Math.random()-.5);let k=0;
+    r.mine.forEach(m=>m.lane=lanes[k++]);r.npc.forEach(n=>n.lane=lanes[k++]);
+  }
+  if(!r.crowd){const L=lanesOf(r);r.crowd=Array(6).fill(0);L.forEach(l=>r.crowd[l.lane]=Math.round(rnd(60,200)*(nota(l.dog)/55)**3.2))}
+}
+function lanesOf(r){const out=[];r.mine.forEach(m=>{const d=S.dogs.find(x=>x.id===m.dogId);if(d)out.push({lane:m.lane,dog:d,mine:true,owner:"você",handler:m.handler,ins:m.ins})});r.npc.forEach(n=>out.push({lane:n.lane,dog:n.dog,mine:false,owner:n.dog.owner,handler:n.handler,ins:n.ins}));return out.sort((a,b)=>a.lane-b.lane)}
+function pool(r){const p=r.crowd.slice();if(r.bet)p[r.bet.lane]+=r.bet.amt;return p}
+function divid(r,i){const p=pool(r),t=p.reduce((a,b)=>a+b,0);return t*(1-CFG.rakeAposta-CFG.donoVencedor)/p[i]}
+
+function buildRaceScene(r,lanes){
+  const L=r.dist,scene=new T3.Scene();
+  scene.background=skyTex();scene.fog=new T3.Fog(0x31407a,70,330);
+  scene.add(new T3.HemisphereLight(0xaec4ff,0x26401f,.55));
+  const sun=new T3.DirectionalLight(0xfff0d8,1.25);sun.position.set(20,40,25);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+  Object.assign(sun.shadow.camera,{left:-22,right:22,top:16,bottom:-16,near:1,far:120});sun.shadow.bias=-.0004;scene.add(sun);scene.add(sun.target);
+  const warm=new T3.DirectionalLight(0xff9a50,.35);warm.position.set(-60,8,-40);scene.add(warm);
+  // grama com faixas de corte
+  const grass=new T3.Mesh(new T3.PlaneGeometry(L+600,500),new T3.MeshStandardMaterial({map:cvTex(256,256,(x,w,h)=>{for(let i=0;i<8;i++){x.fillStyle=i%2?"#2f6a2a":"#367832";x.fillRect(i*w/8,0,w/8,h)}const n=x.getImageData(0,0,w,h);for(let k=0;k<n.data.length;k+=4){const v=rnd(-10,10);n.data[k]+=v;n.data[k+1]+=v;n.data[k+2]+=v}x.putImageData(n,0,0)},[(L+600)/24,500/24]),roughness:1}));
+  grass.rotation.x=-Math.PI/2;grass.position.set(L/2,0,0);grass.receiveShadow=true;scene.add(grass);
+  // pista de areia
+  const sand=new T3.Mesh(new T3.PlaneGeometry(L+120,11.6),new T3.MeshStandardMaterial({map:cvTex(256,256,(x,w,h)=>{x.fillStyle="#c79d6b";x.fillRect(0,0,w,h);const n=x.getImageData(0,0,w,h);for(let k=0;k<n.data.length;k+=4){const v=rnd(-22,22);n.data[k]+=v;n.data[k+1]+=v*.9;n.data[k+2]+=v*.7}x.putImageData(n,0,0);x.strokeStyle="rgba(120,85,45,.25)";for(let i=0;i<14;i++){x.beginPath();const y=rnd(0,h);x.moveTo(0,y);x.lineTo(w,y+rnd(-4,4));x.stroke()}},[(L+120)/8,1.5]),roughness:.98}));
+  sand.rotation.x=-Math.PI/2;sand.position.set(L/2+20,.012,0);sand.receiveShadow=true;scene.add(sand);
+  // linha de chegada
+  const fl=new T3.Mesh(new T3.PlaneGeometry(.35,11.6),new T3.MeshStandardMaterial({color:0xffffff}));fl.rotation.x=-Math.PI/2;fl.position.set(L,.02,0);scene.add(fl);
+  // cercas
+  const railMat=new T3.MeshStandardMaterial({color:0xf4f6fa,roughness:.4});
+  [-5.95,5.95].forEach(z=>{const rail=new T3.Mesh(new T3.BoxGeometry(L+140,.07,.07),railMat);rail.position.set(L/2+10,.95,z);rail.castShadow=true;scene.add(rail);
+    const rail2=rail.clone();rail2.position.y=.5;scene.add(rail2);
+    const n=Math.ceil((L+140)/3.2);const posts=new T3.InstancedMesh(new T3.BoxGeometry(.07,.98,.07),railMat,n);const m=new T3.Matrix4();for(let i=0;i<n;i++){m.makeTranslation(-60+i*3.2,.49,z);posts.setMatrixAt(i,m)}posts.castShadow=true;scene.add(posts)});
+  // trilho da lebre
+  const lrail=new T3.Mesh(new T3.BoxGeometry(L+140,.12,.18),new T3.MeshStandardMaterial({color:0x6a6f7a,metalness:.6,roughness:.4}));lrail.position.set(L/2+10,.32,-6.5);scene.add(lrail);
+  const lure=new T3.Group();const fur=new T3.MeshStandardMaterial({color:0xe9e2d4,roughness:1});
+  const lb=new T3.Mesh(new T3.SphereGeometry(.2,12,10),fur);lb.scale.set(1.5,1,1);lb.position.set(0,.55,.35);lure.add(lb);
+  const le=new T3.Mesh(new T3.ConeGeometry(.05,.28,8),fur);le.position.set(.25,.78,.35);le.rotation.z=-.4;lure.add(le);
+  const arm=new T3.Mesh(new T3.BoxGeometry(.08,.08,.5),new T3.MeshStandardMaterial({color:0x444a55}));arm.position.set(0,.4,.12);lure.add(arm);
+  lure.position.set(-10,0,-6.5);lure.traverse(o=>{if(o.isMesh)o.castShadow=true});scene.add(lure);
+  // boxes de largada
+  const boxes=new T3.Group(),doors=[];const metal=new T3.MeshStandardMaterial({color:0x3a4252,metalness:.5,roughness:.5});
+  for(let i=0;i<6;i++){const z=LANEZ(i);
+    const roof=new T3.Mesh(new T3.BoxGeometry(2.3,.1,1.32),metal);roof.position.set(-1.15,1.18,z);boxes.add(roof);
+    const wall=new T3.Mesh(new T3.BoxGeometry(2.3,1.18,.06),metal);wall.position.set(-1.15,.59,z-.66);boxes.add(wall);
+    const panel=new T3.Mesh(new T3.PlaneGeometry(.9,.45),new T3.MeshStandardMaterial({map:jacketTex(i,true)}));panel.position.set(.01,1.42,z);panel.rotation.y=Math.PI/2;boxes.add(panel);
+    const hinge=new T3.Group();hinge.position.set(.02,1.15,z);const door=new T3.Mesh(new T3.BoxGeometry(.04,1.08,1.22),new T3.MeshStandardMaterial({color:0xc9ced8,metalness:.4,roughness:.5,transparent:true,opacity:.92}));door.position.y=-.54;hinge.add(door);boxes.add(hinge);doors.push(hinge)}
+  const lastWall=new T3.Mesh(new T3.BoxGeometry(2.3,1.18,.06),metal);lastWall.position.set(-1.15,.59,LANEZ(5)+.66);boxes.add(lastWall);
+  const header=new T3.Mesh(new T3.BoxGeometry(.25,.5,8.6),metal);header.position.set(.0,1.42,0);boxes.add(header);
+  boxes.traverse(o=>{if(o.isMesh)o.castShadow=true});scene.add(boxes);
+  // poste e placa de chegada
+  const post=new T3.Mesh(new T3.CylinderGeometry(.08,.08,4.2,10),railMat);post.position.set(L,2.1,-6.3);scene.add(post);
+  const chk=new T3.Mesh(new T3.CircleGeometry(.6,32),new T3.MeshStandardMaterial({map:cvTex(128,128,(x,w,h)=>{for(let i=0;i<8;i++)for(let j=0;j<8;j++){x.fillStyle=(i+j)%2?"#111":"#fff";x.fillRect(i*16,j*16,16,16)}}),side:T3.DoubleSide}));chk.position.set(L,4.4,-6.3);chk.rotation.y=Math.PI/2;scene.add(chk);
+  // placas de distância e anúncios
+  const adText=["PISTA DOS GALGOS","CORRIDA NOTURNA","LEBRE DE OURO","GRADE "+r.grade,"DEMO · SEM VALOR REAL"];
+  for(let x=-30,k=0;x<L+60;x+=34,k++){const t=adText[k%adText.length];const b=new T3.Mesh(new T3.PlaneGeometry(9,1),new T3.MeshStandardMaterial({map:cvTex(512,56,(c,w,h)=>{c.fillStyle=k%2?"#1546b4":"#0b1d47";c.fillRect(0,0,w,h);c.fillStyle=k%2?"#ffc83a":"#ffffff";c.font="800 34px Arial Narrow, Arial, sans-serif";c.textAlign="center";c.textBaseline="middle";c.fillText(t,w/2,h/2+2)}),emissive:0x0a1a40,emissiveIntensity:.6}));b.position.set(x,.6,-7.9);scene.add(b)}
+  for(let m=100;m<L;m+=100){const b=new T3.Mesh(new T3.PlaneGeometry(1.2,.8),new T3.MeshStandardMaterial({map:cvTex(128,86,(c,w,h)=>{c.fillStyle="#fff";c.fillRect(0,0,w,h);c.fillStyle="#d7263d";c.font="900 54px Arial Black, Arial";c.textAlign="center";c.textBaseline="middle";c.fillText(L-m,w/2,h/2+3)})}));b.position.set(m,1.6,-6.1);scene.add(b);const pp=new T3.Mesh(new T3.CylinderGeometry(.04,.04,1.6,6),railMat);pp.position.set(m,.8,-6.12);scene.add(pp)}
+  // arquibancada e torcida
+  const stand=new T3.Group();const conc=new T3.MeshStandardMaterial({color:0x5b6170,roughness:.9});
+  for(let s=0;s<7;s++){const st=new T3.Mesh(new T3.BoxGeometry(L+120,.6,1.4),conc);st.position.set(L/2+10,.3+s*.6,-15-s*1.4);st.receiveShadow=true;stand.add(st);const fill=new T3.Mesh(new T3.BoxGeometry(L+120,s*.6+.01,1.4),conc);fill.position.set(L/2+10,(s*.6)/2,-15-s*1.4);stand.add(fill)}
+  const roof=new T3.Mesh(new T3.BoxGeometry(L+130,.25,12),new T3.MeshStandardMaterial({color:0x1d2a4a}));roof.position.set(L/2+10,9.3,-19.5);stand.add(roof);
+  scene.add(stand);
+  const per=Math.floor((L+110)/.85),rows=7,N=per*rows;const crowd=new T3.InstancedMesh(new T3.BoxGeometry(.34,.5,.28),new T3.MeshStandardMaterial({roughness:.9}),N);
+  const m4=new T3.Matrix4(),col=new T3.Color(),pal=[0xd7263d,0x1f6fd1,0xf2f2f2,0x222222,0xf28c28,0xffc83a,0x6a7fb0,0x8e5b3c,0x3fa060];let k=0;
+  for(let s=0;s<rows;s++)for(let i=0;i<per;i++){m4.makeTranslation(-45+i*.85+rnd(-.15,.15),.6+s*.6+.31,-15-s*1.4+rnd(-.2,.2));crowd.setMatrixAt(k,m4);col.setHex(pick(pal)).multiplyScalar(rnd(.28,.62));crowd.setColorAt(k,col);k++}
+  scene.add(crowd);
+  // refletores
+  for(let x=-40;x<L+80;x+=110){[[-11.5],[13]].forEach(([z])=>{const pole=new T3.Mesh(new T3.CylinderGeometry(.18,.28,24,8),new T3.MeshStandardMaterial({color:0x8a919e,metalness:.6}));pole.position.set(x,12,z);scene.add(pole);const lamp=new T3.Mesh(new T3.BoxGeometry(2.8,1.4,.4),new T3.MeshStandardMaterial({color:0xffffff,emissive:0xfff3c8,emissiveIntensity:2.2}));lamp.position.set(x,24,z+(z<0?.5:-.5));lamp.rotation.x=z<0?.35:-.35;scene.add(lamp)})}
+  // árvores ao fundo
+  const tN=Math.floor((L+300)/7);const trees=new T3.InstancedMesh(new T3.ConeGeometry(2.2,7,8),new T3.MeshStandardMaterial({color:0x1d3b22,roughness:1}),tN);
+  for(let i=0;i<tN;i++){const s=rnd(.8,1.5);m4.makeScale(s,s,s);m4.setPosition(-120+i*7+rnd(-2,2),3.5*s,-48+rnd(-6,4));trees.setMatrixAt(i,m4)}scene.add(trees);
+  // galgos
+  const dogs=lanes.map(l=>{const g=buildDog(l.dog,l.lane);g.position.set(6+l.lane*.0,0,LANEZ(l.lane));scene.add(g);return g});
+  const cam=new T3.PerspectiveCamera(38,16/9,.1,700);cam.position.set(4,2,10);
+  return{scene,cam,dogs,doors,lure,sun};
+}
+
+function openLive(raceId){
+  const r=S.races.find(x=>x.id===raceId);if(!r)return;
+  prepareRace(r);S.open=r.id;S.view="live";render();
+}
+function initLive(){
+  const r=S.races.find(x=>x.id===S.open);if(!r)return;
+  const lanes=lanesOf(r);
+  LIVE={r,lanes,phase:r.status==="fim"?"fim":"apresentacao",t:0,speed:1,cam:"tv",focus:0,parade:0,st:mkSt(lanes),order:[],said:{},raceT:0};
+  let o=null;
+  const ok=attach3D($("#stage"),()=>{o=buildRaceScene(r,lanes);LIVE.o=o;return{scene:o.scene,camera:o.cam,tick:liveTick}});
+  if(!ok){LIVE.o=null;const loop=t=>{if(!LIVE||LIVE.o)return;liveTick(1/60);requestAnimationFrame(loop)};requestAnimationFrame(loop)}
+  if(LIVE.phase==="fim"&&o){o.dogs.forEach((g,i)=>{g.position.x=r.dist+20+i*1.5})}
+  updateOverlay();renderCard();renderAfter();
+}
+function mkSt(lanes){return lanes.map(l=>({pos:0,v:0,e:100,ph:Math.random()*6,n:0,bump:0,done:false,t:0,mods:instrMods(l.ins),r50:0,r75:0}))}
+function setBonus(r,lanes){lanes.forEach(l=>{const m=r.mine.find(x=>x.dogId===l.dog.id);l.handlerBonus=m?m.hb:1.01})}
+function runHeadless(r){prepareRace(r);const lanes=lanesOf(r);setBonus(r,lanes);const keep=LIVE;LIVE={r,lanes,phase:"correndo",st:mkSt(lanes),order:[],said:{},raceT:0,o:null};while(LIVE.order.length<6&&LIVE.raceT<300)simStep(1/60);finishRace();LIVE=keep}
+function finishInBackground(){const Lv=LIVE;if(!Lv||!(Lv.phase==="boxes"||Lv.phase==="correndo"))return;Lv.phase="correndo";Lv.o=null;while(Lv.order.length<6&&Lv.raceT<300)simStep(1/60);finishRace();const w=Lv.lanes[Lv.order[0]];toast(`Prova das ${Lv.r.hora} encerrada: ${w.dog.nome} venceu`)}
+function headline(txt){const h=$("#headline");if(!h)return;if(!txt){h.classList.add("off");return}h.textContent=txt;h.classList.remove("off")}
+function lowerThird(l,extra){const el=$("#lt");if(!el)return;if(!l){el.classList.add("off");return}
+  el.querySelector(".num").textContent=l.lane+1;el.querySelector(".num").style.background=trapBg(l.lane);el.querySelector(".num").style.color=TRAPS[l.lane].fg;
+  el.querySelector("small").textContent=extra||("Box "+(l.lane+1)+" · na apresentação");el.querySelector("b").textContent=l.dog.nome;
+  el.querySelector("span").textContent=`${l.mine?"Seu galgo":"Dono: "+l.owner} · Tratador: ${l.handler} · ${l.mine?"Nota "+nota(l.dog):"Forma "+l.dog.forma}`;el.classList.remove("off")}
+function say(t){const p=$("#tick");if(p)p.textContent=t}
+function updateOverlay(){
+  if(!LIVE)return;const{phase,r}=LIVE;
+  if(phase==="apresentacao"){headline("Apresentação");say("Os galgos desfilam antes da largada. Confira o programa e faça sua aposta.")}
+  if(phase==="fim"){headline("Resultado");lowerThird(null);say(r.res?r.res.comment:"")}
+}
+function liveTick(dt){
+  const Lv=LIVE;if(!Lv)return;const o=Lv.o,r=Lv.r,L=r.dist;
+  dt*=Lv.speed;Lv.t+=dt;
+  if(Lv.phase==="apresentacao"){
+    Lv.parade+=dt;const idx=Math.floor(Lv.parade/3.2)%6;
+    if(idx!==Lv.focus||!Lv.ltShown){Lv.focus=idx;Lv.ltShown=true;lowerThird(Lv.lanes[idx])}
+    if(o){o.dogs.forEach((g,i)=>{const s=Lv.st[i];s.ph+=dt*4;g.position.set(6+i*3.4+Math.sin(Lv.t*.45+i)*.7,0,2.4);g.rotation.y=Math.cos(Lv.t*.45+i)>=0?0:Math.PI;animDog(g,s.ph,.8,true)});
+      const g=o.dogs[idx];if(g){const tx=g.position.x,tz=g.position.z;camTo(o.cam,tx+2.3,1.15,tz+3,tx-.1,.65,tz,dt,2.2)}}
+    return;
+  }
+  if(Lv.phase==="boxes"){
+    Lv.boxT+=dt;
+    if(o){o.dogs.forEach((g,i)=>{g.position.set(-1.1,0,LANEZ(Lv.lanes[i].lane));g.rotation.y=0;animDog(g,Lv.st[i].ph+=dt*2,.2,true)});camTo(o.cam,8,2.4,9,-1,.7,0,dt,3);o.lure.position.x=-40+Lv.boxT*30}
+    if(Lv.boxT>1.6&&!Lv.said.go){Lv.said.go=1;headline("Largaram!");say("Os boxes abrem e a lebre passa. Largaram!")}
+    if(o&&Lv.boxT>1.6)o.doors.forEach(d=>d.rotation.z=Math.max(-1.45,d.rotation.z-dt*6));
+    if(Lv.boxT>1.75){Lv.phase="correndo";Lv.raceT=0}
+    return;
+  }
+  if(Lv.phase==="correndo"||Lv.phase==="desacelera"){
+    const steps=Math.ceil(dt/(1/60));const h=dt/steps;
+    for(let k=0;k<steps;k++)simStep(h);
+    const lead=Math.max(...Lv.st.map(s=>s.pos));
+    if(o){
+      o.dogs.forEach((g,i)=>{const s=Lv.st[i];g.position.x=s.pos-1.1;const amp=clamp(s.v/22,.15,1);animDog(g,s.ph,amp,s.v<8)});
+      if(o.doors)o.doors.forEach(d=>d.rotation.z=Math.max(-1.45,d.rotation.z-dt*6));
+      o.lure.position.x=Math.max(o.lure.position.x+dt*12,lead+7);
+      const top=[...Lv.st].sort((a,b)=>b.pos-a.pos).slice(0,3);const fx=top.reduce((a,s)=>a+s.pos,0)/3;
+      o.sun.position.set(fx+20,40,25);o.sun.target.position.set(fx,0,0);
+      if(Lv.cam==="tv"){if(lead>L-28&&Lv.phase==="correndo")camTo(o.cam,L+2.5,2.1,8.5,L-3,.6,0,dt,3);else camTo(o.cam,fx-4,3.6,14.5,fx+1.5,.5,-.6,dt,4)}
+      else if(Lv.cam==="aerea")camTo(o.cam,fx-13,9.5,7,fx+5,0,0,dt,3);
+      else camTo(o.cam,fx-9,1.6,1.2,fx+4,.6,0,dt,4);
+    }
+    commentary(lead);
+    if(Lv.phase==="correndo"&&Lv.order.length===6){Lv.phase="desacelera";Lv.endT=0;finishRace()}
+    if(Lv.phase==="desacelera"){Lv.endT+=dt;if(Lv.endT>3.5){Lv.phase="fim";updateOverlay()}}
+    if(Math.floor(Lv.t*5)!==Lv.lastCard){Lv.lastCard=Math.floor(Lv.t*5);renderPositions(lead)}
+    return;
+  }
+  if(Lv.phase==="fim"&&o){o.dogs.forEach((g,i)=>{animDog(g,Lv.st[i].ph+=dt*1.5,.12,true)});const fx=L+24;camTo(o.cam,fx-4,2.6,11,fx+4,.6,0,dt,1.5)}
+}
+function camTo(cam,px,py,pz,lx,ly,lz,dt,k){
+  const a=1-Math.exp(-dt*k);cam.position.x+=(px-cam.position.x)*a;cam.position.y+=(py-cam.position.y)*a;cam.position.z+=(pz-cam.position.z)*a;
+  cam.userData.l=cam.userData.l||new T3.Vector3(lx,ly,lz);const l=cam.userData.l;l.x+=(lx-l.x)*a;l.y+=(ly-l.y)*a;l.z+=(lz-l.z)*a;cam.lookAt(l);
+}
+function simStep(h){
+  const Lv=LIVE,r=Lv.r,L=r.dist;Lv.raceT+=h;
+  Lv.lanes.forEach((l,i)=>{const s=Lv.st[i],d=l.dog.s,m=s.mods;
+    if(s.done){s.v=Math.max(0,s.v-h*7);s.pos+=s.v*h;s.ph+=h*s.v*.85;return}
+    let v=17.5+d.vel*.12;
+    if(s.pos<60){const f=s.pos/60;v*=.5+f*.5+(d.lar/380+m.start)*(1-f)}
+    s.e-=Math.max(.05,(1.32-d.est/95-d.res/240)*m.drain)*.21*s.v*h*(480/L)**.35;
+    if(s.e<45)v*=.79+Math.max(0,s.e)/215;
+    v*=.86+.14*(l.dog.cond||95)/100;v*=.955+.045*(l.dog.afi||70)/100;v*=1-(l.dog.fat||0)/460;v*=m.speed;
+    if(r.piso==="Pesado")v*=.985+d.for/4000;if(r.piso===pisoPref(l.dog))v*=1.012;if(distIdeal(l.dog)===L)v*=1.012;
+    if(l.handlerBonus)v*=l.handlerBonus;
+    if(s.pos>L*.78)v*=1+d.for/2200;
+    s.n+=(Math.random()-.5)*h*2.2;s.n*=.992;v*=1+s.n*(.075-d.foc/1800);
+    if(m.rail&&s.bump<=0&&Math.random()<.0012){s.bump=.9;if(!Lv.said["b"+i]){Lv.said["b"+i]=1;say(`Esbarrão na cerca! Box ${l.lane+1} perde terreno.`)}}
+    if(s.bump>0){s.bump-=h;v*=.83}
+    s.v+=(v-s.v)*Math.min(1,h*3.2);s.pos+=s.v*h;s.ph+=h*s.v*.85;
+    if(!s.r50&&s.pos>=50)s.r50=Lv.st.filter(x=>x.pos>=50&&x!==s).length+1;
+    if(!s.r75&&s.pos>=L*.75)s.r75=Lv.st.filter(x=>x.pos>=L*.75&&x!==s).length+1;
+    if(s.pos>=L){s.done=true;s.t=Lv.raceT-(s.pos-L)/Math.max(1,s.v);Lv.order.push(i)}
+  });
+}
+function commentary(lead){
+  const Lv=LIVE,L=Lv.r.dist;const ord=[...Lv.st.keys()].sort((a,b)=>Lv.st[b].pos-Lv.st[a].pos);const n=i=>`${Lv.lanes[i].dog.nome} (box ${Lv.lanes[i].lane+1})`;
+  if(lead>45&&!Lv.said.s){Lv.said.s=1;headline(null);say(`${n(ord[0])} sai melhor dos boxes, ${n(ord[1])} logo atrás.`)}
+  if(lead>L*.5&&!Lv.said.m){Lv.said.m=1;say(`Metade da prova: ${n(ord[0])} na frente, ${n(ord[1])} em segundo e ${n(ord[2])} vem em terceiro.`)}
+  if(lead>L*.78&&!Lv.said.f){Lv.said.f=1;headline("Reta final");say(`Entrando na reta final! ${n(ord[0])} segura, ${n(ord[1])} vem forte!`)}
+  if(Lv.order.length&&!Lv.said.w){Lv.said.w=1;say(`${n(Lv.order[0])} vence!`)}
+}
+function lenStr(m){if(m<.12)return"focinho";if(m<.3)return"cabeça";if(m<.55)return"½ corpo";const q=Math.round(m/1.1*4)/4,w=Math.floor(q),f=q-w;return(w?w:"")+({0:"",.25:"¼",.5:"½",.75:"¾"}[f]||"")+(q>1?" corpos":" corpo")}
+function finishRace(){
+  const Lv=LIVE,r=Lv.r,lanes=Lv.lanes,ord=Lv.order;
+  const times=ord.map(i=>Lv.st[i].t*1.47);
+  const pot=r.fee*6,rake=pot*CFG.rakeCorrida,liq=pot-rake;S.plat.corrida+=rake;S.premios+=liq;
+  const msgs=[];const w=lanes[ord[0]],s2=lanes[ord[1]];
+  lanes.forEach((l,i)=>{const p=ord.indexOf(i)+1;const st=Lv.st[i];
+    let c=st.r50<=2?"Largou bem":st.r50>=5?"Largada lenta":"Largada regular";
+    c+=st.r75>p?", cresceu no final":st.r75<p?", cansou no fim":", manteve a posição";
+    if(Lv.said["b"+i])c+=", esbarrou na cerca";
+    l.dog.corr=(l.dog.corr||0)+1;if(p===1)l.dog.vit=(l.dog.vit||0)+1;
+    l.dog.forma=(p+"-"+(l.dog.forma||"")).split("-").slice(0,3).join("-");
+    if(l.mine){const d=l.dog;d.hoje++;d.fat=clamp(d.fat+ri(22,32)*(l.ins.esf==="Forçar"?1.25:l.ins.esf==="Poupar"?.75:1),0,100);d.afi=clamp(d.afi+(p<=3?4:2),0,100);d.cond=clamp(d.cond-ri(3,7),40,100);
+      d.hist.unshift({dia:S.dia,pista:r.pista,dist:r.dist,grade:r.grade,piso:r.piso,pos:p,tempo:times[p-1].toFixed(2),coment:c});d.hist=d.hist.slice(0,30);
+      if(p===1){log("Prêmio",`1º lugar · ${r.grade} ${r.dist}m · ${d.nome}`,liq*CFG.premio1);msgs.push(`${d.nome} venceu! Prêmio de <b>${fmt(liq*CFG.premio1)} CR</b>.`)}
+      else if(p===2){log("Prêmio",`2º lugar · ${r.grade} ${r.dist}m · ${d.nome}`,liq*CFG.premio2);msgs.push(`${d.nome} chegou em 2º. Prêmio de <b>${fmt(liq*CFG.premio2)} CR</b>.`)}
+      else msgs.push(`${d.nome} chegou em ${p}º lugar.`)}});
+  const p=pool(r),tot=p.reduce((a,b)=>a+b,0),rakeA=tot*CFG.rakeAposta,dono=tot*CFG.donoVencedor,dist=tot-rakeA-dono;S.plat.aposta+=rakeA;
+  if(w.mine){log("Bônus de dono","5% do pote de apostas",dono);msgs.push(`Como dono do vencedor você recebe <b>${fmt(dono)} CR</b> do pote de apostas.`)}
+  if(r.bet){if(r.bet.lane===w.lane){const g=dist*r.bet.amt/p[w.lane];log("Aposta ganha",`Box ${w.lane+1} · ${r.grade} ${r.hora}`,g);msgs.push(`Aposta certa! Você recebe <b>${fmt(g)} CR</b>.`)}else msgs.push(`Sua aposta no box ${r.bet.lane+1} não acertou.`)}
+  msgs.push(`A plataforma reteve ${fmt(rake)} CR das inscrições e ${fmt(rakeA)} CR do pote de apostas.`);
+  r.res={order:ord.map(i=>lanes[i].lane),times:times.map(t=>t.toFixed(2)),margins:ord.map((i,k)=>k?lenStr((Lv.st[i].t-Lv.st[ord[k-1]].t)*(r.dist/Lv.st[i].t)):""),comment:`${w.dog.nome} vence em ${times[0].toFixed(2)}s, ${lenStr((Lv.st[ord[1]].t-Lv.st[ord[0]].t)*(r.dist/Lv.st[ord[1]].t))} à frente de ${s2.dog.nome}.`,msgs,dogs:lanes.map(l=>({lane:l.lane,dog:JSON.parse(JSON.stringify(l.dog)),mine:l.mine,owner:l.owner}))};
+  r.status="fim";save();
+  $("#hBal").textContent=fmt(S.cr);
+  renderCard();renderAfter();headline(`Box ${w.lane+1} vence`);
+}
+
+// ================== RENDER ==================
+const VIEWS={canil:vCanil,perfil:vPerfil,programa:vPrograma,live:vLive,leilao:vLeilao,pacotes:vPacotes,instalacoes:vInst,fluxo:vFluxo};
+const NAV=[["canil","Meu canil"],["programa","Programa"],["live","Ao vivo"],["leilao","Leilão"],["pacotes","Pacotes"],["instalacoes","Instalações"],["fluxo","Fluxo do dinheiro"]];
+function render(){
+  if(S.view!=="live"){finishInBackground();LIVE=null}
+  save();stop3D();
+  $("#hBal").textContent=fmt(S.cr)+" CR";$("#hDay").textContent=S.dia;
+  $("#nav").innerHTML=NAV.filter(([k])=>k!=="live"||S.open).map(([k,l])=>`<button class="tab" data-nav="${k}" aria-current="${S.view===k||(k==="canil"&&S.view==="perfil")}">${k==="live"?'<span class="live-dot"></span>':""}${l}</button>`).join("");
+  $("#main").innerHTML=(VIEWS[S.view]||vCanil)();thumbs();
+  if(S.view==="perfil"&&S.ptab==="geral"){const d=S.dogs.find(x=>x.id===S.sel);if(d)attach3D($("#stage"),()=>{const o=buildPortrait(d);return o})}
+  if(S.view==="live")initLive();
+  if(S.view==="leilao")renderRing();
+}
+function dogMeters(d){return`<div class="meters"><div class="meter"><span>Condição<b>${d.cond}%</b></span><div class="track"><i style="width:${d.cond}%"></i></div></div><div class="meter"><span>Fadiga<b>${Math.round(d.fat)}/100</b></span><div class="track"><i style="width:${d.fat}%;background:${d.fat>CFG.fadigaMax?"var(--red)":d.fat>40?"var(--warn)":"var(--good)"}"></i></div></div></div>`}
+function statusChip(d){const[c,t]=status(d);return`<span class="chip ${c}">${t}</span>`}
 
 function vCanil(){
-  const mine=S.dogs;
-  return `<div class="secthead"><div><h2>Meu canil</h2><p class="sub">Seus galgos. Ração dá um ponto aleatório, treino foca no atributo que você escolher. Cada cão corre no máximo ${CFG.corridasPorDia} vezes por dia.</p></div>
-  <button class="btn" data-act="novodia">Avançar dia (dia ${S.dia})</button></div>
-  ${mine.length?`<div class="grid">${mine.map(d=>dogCard(d,`
-    <div class="meta"><span>Corridas hoje: <b>${d.hoje}/${CFG.corridasPorDia}</b></span><span>Vitórias: <b>${d.vit}</b>/${d.corridas}</span><span>Valor estimado: <b>${fmt(valor(d))} CR</b></span></div>
-    <div class="acts">
-      <button class="btn sm" data-act="racao" data-id="${d.id}">Ração · ${CFG.racao}</button>
-      <select data-treino="${d.id}" aria-label="Atributo do treino" id="tr-${d.id}">${STATS.map(([k,,f])=>`<option value="${k}">${f}</option>`).join("")}</select>
-      <button class="btn sm" data-act="treino" data-id="${d.id}">Treinar · ${CFG.treino}</button>
-      <button class="btn sm" data-act="vender" data-id="${d.id}">Vender</button>
-    </div>`)).join("")}</div>`:`<div class="empty">Você ainda não tem galgos. Abra um pacote para começar.</div>`}`;
+  return`<div class="sect"><div><div class="eyebrow">Noite ${S.dia} · ${S.dogs.length} de ${capacidade()} vagas</div><h1 class="h-serif h-l">Meu canil</h1><p class="lead">Seus galgos, a condição de cada um e quem está pronto para correr hoje. Toque em um galgo para abrir a ficha.</p></div>
+  <div class="push"><button class="btn" data-act="novodia">Encerrar a noite</button><button class="btn gold" data-nav="programa">Ver programa</button></div></div>
+  ${S.dogs.length?`<div class="grid g-dogs">${S.dogs.map(d=>`<article class="card dogcard" data-open="${d.id}" tabindex="0">
+    <div class="dc-top"><canvas data-thumb="${d.coat}" width="72" height="48"></canvas><div style="min-width:0"><div class="dc-name">${esc(d.nome)}</div><div class="dc-sub"><span class="r-${d.rar}">${d.rar}</span> · ${d.sexo} · ${d.idade} anos</div></div><div class="dc-n"><b>${nota(d)}</b><span>Grade ${grade(d).g}</span></div></div>
+    ${dogMeters(d)}
+    <div class="row" style="justify-content:space-between">${statusChip(d)}<span class="dc-sub">${d.vit||0} vitórias em ${d.corr||0} corridas</span></div></article>`).join("")}</div>`:`<div class="empty">Seu canil está vazio. Abra um pacote ou arremate um galgo no leilão.</div>`}`;
+}
+function vPerfil(){
+  const d=S.dogs.find(x=>x.id===S.sel);if(!d){S.view="canil";return vCanil()}
+  const e=entryOf(d);const tabs=[["geral","Visão geral"],["treino","Treino"],["hist","Histórico"]];
+  let body="";
+  if(S.ptab==="geral")body=`<div class="pgrid"><div class="stage" id="stage"><span class="portrait-tag">Retrato · ${COATS[d.coat].n}</span></div>
+    <div class="card"><div class="eyebrow">Retrato</div><h2 class="h-serif h-m" style="margin:4px 0 12px">${esc(d.nome)}</h2>
+    <dl class="kv"><dt>Pelagem</dt><dd>${COATS[d.coat].n}</dd><dt>Sexo</dt><dd>${d.sexo}</dd><dt>Idade</dt><dd>${d.idade} anos</dd><dt>Estilo</dt><dd>${estilo(d)}</dd><dt>Distância</dt><dd>${distIdeal(d)} m</dd><dt>Piso</dt><dd>${pisoPref(d)}</dd><dt>Forma</dt><dd>${d.hist.length?d.hist.slice(0,5).map(h=>h.pos).join("-"):"Estreante"}</dd></dl></div></div>
+    <div class="two" style="margin-top:14px"><div class="card"><h3>Condição física</h3><div class="cond">
+      <div class="tile"><span>Condição</span><b>${d.cond}%</b><small>sobe com descanso</small></div>
+      <div class="tile"><span>Fadiga</span><b style="color:${d.fat>CFG.fadigaMax?"var(--red)":"inherit"}">${Math.round(d.fat)}/100</b><small>menor é melhor</small></div>
+      <div class="tile"><span>Afiação</span><b>${d.afi}%</b><small>sobe correndo</small></div>
+      <div class="tile"><span>Corridas hoje</span><b>${d.hoje}/${CFG.corridasDia}</b><small>limite diário</small></div></div>
+      <div class="row" style="margin-top:12px">${statusChip(d)}</div></div>
+    <div class="card"><h3>Próxima corrida</h3>${e?`<div class="h-serif h-m">${e.hora} · ${e.pista}</div><p class="lead">Grade ${e.grade} · ${e.dist} m · piso ${e.piso}</p><div class="row" style="margin-top:12px"><button class="btn gold" data-live="${e.id}">Ir para a corrida</button></div>`:`<div class="h-serif h-m">Nenhuma corrida marcada</div><p class="lead">Este galgo pode correr provas da grade ${grade(d).g} e vizinhas.</p><div class="row" style="margin-top:12px"><button class="btn gold" data-nav="programa">Procurar corrida</button></div>`}</div></div>
+    <div class="two" style="margin-top:14px"><div class="card"><h3>Atributos</h3><div class="stats">${STATS.map(([k,f])=>`<div class="st"><span>${f}</span><div class="bar"><i style="width:${d.s[k]}%"></i></div><span class="v">${d.s[k]}</span></div>`).join("")}</div></div>
+    <div class="card"><h3>Cuidados e negócios</h3><p class="lead" style="margin-bottom:12px">Ração dá pontos em um atributo aleatório. Leiloar coloca o galgo no pregão para outros jogadores.</p><div class="row"><button class="btn" data-act="racao" data-id="${d.id}">Dar ração · ${CFG.racao} CR</button><button class="btn" data-act="leiloar" data-id="${d.id}" ${e?"disabled":""}>Leiloar galgo</button></div><p class="lead" style="margin-top:10px">Valor estimado: <b>${fmt(valor(d))} CR</b></p></div></div>`;
+  if(S.ptab==="treino"){const bonus=(lv("pista")-1)*8;body=`<div class="card"><div class="eyebrow">Programa de treino · ${d.trein}/${CFG.treinosDia} sessões hoje</div><h2 class="h-serif h-m" style="margin:4px 0 6px">Escolha o foco do treino</h2><p class="lead">Cada sessão custa ${CFG.treino} CR, soma 10 de fadiga e avança o programa. Ao chegar em 100%, o atributo ganha +3 pontos. Sua pista de treino dá +${bonus}% por sessão.</p>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:14px">${STATS.map(([k,f])=>{const p=d.prog[k]||0;return`<div class="card flat"><div class="row" style="justify-content:space-between;align-items:center"><b class="h-serif h-m">${f}</b><span class="chip">${d.s[k]}</span></div><div class="meter" style="margin:10px 0"><span>Progresso<b>${p}%</b></span><div class="track"><i style="width:${p}%;background:var(--gold)"></i></div></div><button class="btn sm" data-act="treino" data-id="${d.id}" data-k="${k}" ${d.trein>=CFG.treinosDia||d.fat>CFG.fadigaMax?"disabled":""}>Treinar ${f.toLowerCase()}</button></div>`}).join("")}</div></div>`}
+  if(S.ptab==="hist")body=d.hist.length?`<div class="card tw"><table class="t"><thead><tr><th>Noite</th><th>Pista</th><th>Prova</th><th>Piso</th><th>Chegada</th><th>Tempo</th><th>Comentário</th></tr></thead><tbody>${d.hist.map(h=>`<tr><td class="n">${h.dia}</td><td>${h.pista}</td><td>${h.grade} · ${h.dist} m</td><td>${h.piso}</td><td class="n"><b>${h.pos}º</b>/6</td><td class="n">${h.tempo}s</td><td class="wrap">${h.coment}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">Este galgo ainda não correu. O histórico aparece aqui depois da primeira prova.</div>`;
+  return`<button class="btn ghost sm" data-nav="canil">← Meu canil</button>
+  <div class="prof-head" style="margin-top:12px"><div><div class="eyebrow">Meu galgo · <span class="r-${d.rar}">${d.rar}</span></div><h1 class="h-serif h-xl">${esc(d.nome)}</h1><p class="lead">${d.sexo} · ${d.idade} anos · ${COATS[d.coat].n} · ${d.vit||0} vitórias em ${d.corr||0} corridas</p></div>
+  <div class="tiles"><div class="tile"><span>Nota oficial</span><b>${nota(d)}</b></div><div class="tile"><span>Grade</span><b>${grade(d).g}</b></div><div class="tile"><span>Valor</span><b>${fmt(valor(d))}</b></div></div></div>
+  <div class="subtabs">${tabs.map(([k,l])=>`<button class="tab" data-ptab="${k}" aria-current="${S.ptab===k}">${l}</button>`).join("")}</div>${body}`;
 }
 
+let ENTRY={race:null,dog:null,handler:0,ins:{lar:"Normal",esf:"Normal",pos:"Livre"}};
+function handlersFor(r){const seed=r.id;const hs=[0,1,2].map(k=>HANDLERS[(seed+k*2)%HANDLERS.length]);return[{n:"Você conduz",d:"Sem custo, sem bônus",fee:0,b:1},{n:hs[0][0],d:hs[0][1],fee:Math.round(r.fee*.5/5)*5,b:1.012},{n:hs[1][0],d:hs[1][1],fee:Math.round(r.fee*.9/5)*5,b:1.022}]}
+function vPrograma(){
+  return`<div class="sect"><div><div class="eyebrow">Noite ${S.dia} · ${S.races.length} provas</div><h1 class="h-serif h-l">Programa de corridas</h1><p class="lead">Cada prova tem seis boxes. A inscrição forma o prêmio: a plataforma retém ${CFG.rakeCorrida*100}% e o restante vai para o 1º (${CFG.premio1*100}%) e o 2º (${CFG.premio2*100}%).</p></div><div class="push"><button class="btn" data-act="novodia">Encerrar a noite</button></div></div>
+  <div class="card" style="padding:0">${S.races.map(r=>{const prize=r.fee*6*(1-CFG.rakeCorrida)*CFG.premio1;const mine=r.mine.length;const open=ENTRY.race===r.id;
+    return`<div class="raceRow"><div class="hr">${r.hora}</div><div style="min-width:0"><div class="nm">Prova ${r.grade} · ${r.dist} m</div><div class="ds">${r.pista} · piso ${r.piso}${mine?` · <span style="color:var(--gold)">${mine} galgo seu inscrito</span>`:""}</div>${!mine&&!r.npc&&r.status!=="fim"&&eligFor(r).length?`<span class="chip ok" style="margin-top:5px">Seu galgo pode correr</span>`:""}</div>
+    <div class="k"><span>Inscrição</span><b>${r.fee}</b></div><div class="k"><span>Prêmio 1º</span><b>${fmt(prize)}</b></div><div class="k"><span>Status</span><b style="font-size:12px">${r.status==="fim"?"Encerrada":"Aberta"}</b></div>
+    <div class="acts">${r.status==="fim"?`<button class="btn sm" data-live="${r.id}">Ver resultado</button>`:`<button class="btn sm" data-entry="${r.id}">${open?"Fechar":"Inscrever"}</button><button class="btn gold sm" data-live="${r.id}">Assistir e apostar</button>`}</div></div>${open?entryPanel(r):""}`}).join("")}</div>`;
+}
+function eligFor(r){const gIdx=gi(r.grade);return S.dogs.filter(d=>Math.abs(gi(grade(d).g)-gIdx)<=1&&d.fat<=CFG.fadigaMax&&d.hoje<CFG.corridasDia&&!entryOf(d))}
+function entryPanel(r){
+  const elig=eligFor(r);
+  if(r.npc)return`<div class="entry"><p class="lead">Os boxes desta prova já foram sorteados. Escolha outra prova para inscrever.</p></div>`;
+  if(r.mine.length>=2)return`<div class="entry"><p class="lead">Máximo de 2 galgos seus por prova.</p></div>`;
+  if(!elig.length)return`<div class="entry"><p class="lead">Nenhum galgo seu pode correr esta prova agora. Ele precisa estar na grade ${r.grade} ou vizinha, com fadiga até ${CFG.fadigaMax} e sem ter atingido o limite de corridas da noite.</p></div>`;
+  if(!elig.some(d=>d.id===ENTRY.dog))ENTRY.dog=elig[0].id;
+  const hs=handlersFor(r);const h=hs[ENTRY.handler];const tot=r.fee+h.fee;
+  const sel=(k,opts,lab)=>`<label class="f" for="ins-${k}">${lab}<select id="ins-${k}" data-ins="${k}">${opts.map(o=>`<option ${ENTRY.ins[k]===o?"selected":""}>${o}</option>`).join("")}</select></label>`;
+  return`<div class="entry"><div><div class="eyebrow">1 · Galgo</div><div class="picks" style="margin-top:8px">${elig.map(d=>`<button class="pick" data-pdog="${d.id}" aria-pressed="${ENTRY.dog===d.id}"><b>${esc(d.nome)}</b><small>Nota ${nota(d)} · grade ${grade(d).g} · fadiga ${Math.round(d.fat)}</small><small>Gosta de ${distIdeal(d)} m e piso ${pisoPref(d).toLowerCase()}</small></button>`).join("")}</div></div>
+  <div><div class="eyebrow">2 · Tratador</div><div class="picks" style="margin-top:8px">${hs.map((x,i)=>`<button class="pick" data-phand="${i}" aria-pressed="${ENTRY.handler===i}"><b>${x.n}</b><small>${x.d}</small><span class="fee">${x.fee?x.fee+" CR":"Grátis"}</span></button>`).join("")}</div></div>
+  <div><div class="eyebrow">3 · Instruções de prova</div><div class="row" style="margin-top:8px">${sel("lar",["Explosiva","Normal","Segurar"],"Largada")}${sel("esf",["Forçar","Normal","Poupar"],"Esforço")}${sel("pos",["Colar na cerca","Livre","Por fora"],"Posição")}</div></div>
+  <div class="row" style="justify-content:space-between;align-items:center"><span class="lead" style="margin:0">Inscrição ${r.fee} CR${h.fee?` + tratador ${h.fee} CR`:""} = <b style="color:var(--ink)">${tot} CR</b></span><button class="btn gold" data-act="inscrever" data-id="${r.id}">Confirmar inscrição</button></div></div>`;
+}
+
+function vLive(){
+  const r=S.races.find(x=>x.id===S.open);if(!r){S.view="programa";return vPrograma()}
+  const prize=r.fee*6*(1-CFG.rakeCorrida)*CFG.premio1;
+  return`<div class="racebar"><div><div class="eyebrow">${r.status==="fim"?"Encerrada":"Ao vivo"} · Noite ${S.dia} · ${r.hora}</div><h1 class="h-serif h-l">${r.pista} · Prova ${r.grade}</h1></div>
+  <div class="tiles"><div class="tile"><span>Distância</span><b>${r.dist} m</b></div><div class="tile"><span>Piso</span><b>${r.piso}</b></div><div class="tile"><span>Prêmio 1º</span><b>${fmt(prize)}</b></div><div class="tile"><span>Corredores</span><b>6 de 6</b></div></div></div>
+  <div class="livegrid"><div style="min-width:0"><div class="stage" id="stage"><div class="ovl"><div class="headline off" id="headline"></div><div class="posStrip" id="posStrip" hidden></div><div class="distLeft" id="distLeft" hidden></div>
+    <div class="lt off" id="lt"><div class="num"></div><div class="body"><small></small><b></b><span></span></div></div></div></div>
+    <div class="ticker"><span class="eyebrow">Narração</span><p id="tick"></p></div>
+    <div class="ctrls" id="ctrls">${r.status==="fim"?"":`<button class="btn gold" data-act="largar">Levar aos boxes e largar</button>`}
+      <span class="seg" role="group" aria-label="Câmera"><button data-cam="tv" aria-pressed="true">TV</button><button data-cam="aerea" aria-pressed="false">Aérea</button><button data-cam="lado" aria-pressed="false">Pista</button></span>
+      <span class="seg" role="group" aria-label="Velocidade"><button data-spd="1" aria-pressed="true">1x</button><button data-spd="2" aria-pressed="false">2x</button><button data-spd="4" aria-pressed="false">4x</button></span>
+      <button class="btn ghost sm" data-nav="programa" style="margin-left:auto">Voltar ao programa</button></div>
+    <div id="after" style="margin-top:14px"></div></div>
+  <aside class="card" id="racecard"></aside></div>`;
+}
+function renderCard(){
+  const el=$("#racecard");if(!el||!LIVE)return;const r=LIVE.r;const pre=LIVE.phase==="apresentacao";const fim=r.status==="fim";
+  const rows=LIVE.lanes.map(l=>{const right=fim?`<span class="pos">${r.res.order.indexOf(l.lane)+1}º</span>`:`<span class="odd" title="Retorno estimado">${divid(r,l.lane).toFixed(2)}x</span>${pre?`<button class="btn sm" data-betlane="${l.lane}" ${r.bet&&r.bet.lane===l.lane?'style="border-color:var(--gold)"':""}>Apostar</button>`:""}`;
+    return`<div class="rc-row ${l.mine?"me":""}">${trapEl(l.lane)}<div style="min-width:0"><div class="rc-name">${esc(l.dog.nome)}</div><div class="rc-sub">${l.mine?"Seu galgo":esc(l.owner)} · ${esc(l.handler)}</div></div><div class="rc-r">${right}</div></div>`}).join("");
+  const p=pool(r),tot=p.reduce((a,b)=>a+b,0);
+  el.innerHTML=`<div class="rc-head"><h3 style="margin:0">Programa da prova</h3><span class="chip ${fim?"":"bad"}">${fim?"Resultado":pre?"Apostas abertas":"Apostas fechadas"}</span></div>${rows}
+  ${pre?`<div class="betbox"><div class="eyebrow">Sua aposta</div>${r.bet?`<p class="lead" style="margin:0">${fmt(r.bet.amt)} CR no box ${r.bet.lane+1}. Toque em outro box para trocar.</p>`:`<p class="lead" style="margin:0">Escolha o valor e toque em Apostar no box.</p>`}
+  <label class="f" for="betamt">Valor (CR)<input id="betamt" type="number" min="10" step="10" value="${r.bet?r.bet.amt:50}"></label>
+  <p class="lead" style="margin:0;font-size:12px">Pote: ${fmt(tot)} CR. Plataforma ${CFG.rakeAposta*100}%, dono do vencedor ${CFG.donoVencedor*100}%, o resto divide entre quem acertou.</p></div>`:""}`;
+}
+function renderPositions(lead){
+  if(!LIVE)return;const ps=$("#posStrip"),dl=$("#distLeft");const ord=[...LIVE.st.keys()].sort((a,b)=>LIVE.st[b].pos-LIVE.st[a].pos);
+  if(ps){ps.hidden=false;ps.innerHTML=ord.map(i=>trapEl(LIVE.lanes[i].lane)).join("")}
+  if(dl){dl.hidden=false;dl.textContent=lead<LIVE.r.dist?`Faltam ${Math.max(0,Math.ceil(LIVE.r.dist-lead))} m`:"Chegada"}
+  const lt=$("#lt");if(lt&&!lt.classList.contains("off"))lowerThird(null);
+}
+function renderAfter(){
+  const el=$("#after");if(!el||!LIVE)return;const r=LIVE.r;if(!r.res){el.innerHTML="";return}
+  const byLane={};r.res.dogs.forEach(x=>byLane[x.lane]=x);
+  el.innerHTML=`<div class="card"><div class="eyebrow">Resultado oficial</div><h2 class="h-serif h-m" style="margin:4px 0 12px">${esc(r.res.comment)}</h2>
+  <div class="res" style="margin-bottom:14px">${r.res.msgs.map(m=>`<div class="callout">${m}</div>`).join("")}</div>
+  <div class="tw"><table class="t"><thead><tr><th>Ch.</th><th>Box</th><th>Galgo</th><th>Dono</th><th>Tempo</th><th>Dif.</th>${STATS.map(([,f])=>`<th>${f.slice(0,3)}</th>`).join("")}<th>Nota</th><th></th></tr></thead><tbody>
+  ${r.res.order.map((ln,k)=>{const x=byLane[ln];return`<tr><td class="n"><b>${k+1}º</b></td><td>${trapEl(ln)}</td><td class="h-serif" style="font-size:15px">${esc(x.dog.nome)}</td><td>${x.mine?"você":esc(x.owner)}</td><td class="n">${r.res.times[k]}s</td><td>${r.res.margins[k]}</td>${STATS.map(([s])=>`<td class="n">${x.dog.s[s]}</td>`).join("")}<td class="n"><b>${nota(x.dog)}</b></td><td>${!x.mine&&x.owner!=="você"?`<button class="btn sm" data-oferta="${ln}">Fazer oferta</button>`:""}</td></tr>`}).join("")}</tbody></table></div>
+  <p class="lead" style="font-size:12px">Os atributos dos rivais só aparecem depois da chegada.</p></div>`;
+  const c=$("#ctrls .btn.gold");if(c)c.remove();
+}
+
+// ----- Leilão -----
+function vLeilao(){
+  const a=S.auction;
+  return`<div class="sect"><div><div class="eyebrow">Pregão aberto · Noite ${S.dia}</div><h1 class="h-serif h-l">Leilão de galgos</h1><p class="lead">Lotes do criador oficial e de outros jogadores. Cada lance novo estende o relógio. Em toda venda a plataforma cobra ${CFG.taxaVenda*100}% de quem vende.</p></div><div class="push"><button class="btn" data-act="novoslotes" ${a&&!a.done?"disabled":""}>Novos lotes</button></div></div>
+  <div class="lgrid"><div class="grid">${S.lots.length?S.lots.map(l=>`<button class="lot" data-lot="${l.id}" aria-pressed="${a&&a.lotId===l.id}"><canvas data-thumb="${l.dog.coat}" width="64" height="44"></canvas><div style="min-width:0"><b>${esc(l.dog.nome)}</b><small><span class="r-${l.dog.rar}">${l.dog.rar}</span> · ${l.dog.sexo} · ${l.dog.idade} anos · nota ${nota(l.dog)}</small><br><small>Vendedor: ${l.seller==="voce"?"você":esc(l.seller)}</small></div><div style="text-align:right"><small>Lance inicial</small><div class="price" style="font-size:16px">${fmt(l.base)}</div></div></button>`).join(""):`<div class="empty">Sem lotes agora. Peça novos lotes.</div>`}</div>
+  <div class="card" id="ring"></div></div>`;
+}
+function renderRing(){
+  const el=$("#ring");if(!el)return;const a=S.auction;
+  if(!a){el.innerHTML=`<div class="ring"><div class="eyebrow">Anel de leilão</div><h2 class="h-serif h-m">Escolha um lote</h2><p class="lead" style="margin:0 auto">Toque em um lote à esquerda para abrir o pregão.</p></div>`;return}
+  const lot=a.lot,d=lot.dog,left=Math.max(0,a.ends-Date.now()),mineSell=lot.seller==="voce";const inc=[.05,.1,.2].map(f=>Math.max(10,Math.round(a.bid*f/10)*10));
+  el.innerHTML=`<div class="ring"><div><div class="eyebrow">${a.done?"Martelo batido":"Lances abertos"}</div><h2 class="h-serif h-l">${esc(d.nome)}</h2><p class="lead" style="margin:4px auto 0"><span class="r-${d.rar}">${d.rar}</span> · ${COATS[d.coat].n} · ${d.idade} anos · ${estilo(d)}</p></div>
+  <div class="stats" style="text-align:left">${STATS.map(([k,f])=>`<div class="st"><span>${f}</span><div class="bar"><i style="width:${d.s[k]}%"></i></div><span class="v">${d.s[k]}</span></div>`).join("")}</div>
+  <div class="bidbox"><div class="eyebrow">Lance atual</div><div class="cur">${fmt(a.bid)} CR</div><p class="lead">${a.leader?`Maior lance: <b style="color:var(--ink)">${a.leader==="voce"?"você":esc(a.leader)}</b>`:"Nenhum lance ainda"}</p></div>
+  <div class="timer"><i style="width:${a.done?0:Math.min(100,left/80)}%"></i></div>
+  ${a.done?`<div class="callout" style="text-align:left">${a.msg}</div><div><button class="btn" data-act="fecharring">Fechar pregão</button></div>`:mineSell?`<p class="lead" style="margin:0 auto">Você está vendendo este galgo. Acompanhe os lances.</p>`:`<div class="bids">${inc.map(v=>`<button class="btn gold" data-bid="${v}" ${a.leader==="voce"||a.out?"disabled":""}>+${fmt(v)} (${fmt(a.bid+v)})</button>`).join("")}<button class="btn red" data-act="desistir" ${a.out?"disabled":""}>${a.out?"Você saiu":"Desistir"}</button></div>`}
+  <div class="blog">${a.log.slice(0,8).map(x=>`<div>${x}</div>`).join("")}</div></div>`;
+}
+function startAuction(lot){
+  if(S.auction&&!S.auction.done){toast("Termine o pregão atual primeiro");return}
+  const v=valor(lot.dog);const n=ri(2,4);
+  S.auction={lotId:lot.id,lot,bid:lot.base,leader:null,ends:Date.now()+8000,done:false,log:[`Pregão aberto em ${fmt(lot.base)} CR`],bidders:Array.from({length:n},()=>({n:pick(PLAYERS),max:Math.round(v*rnd(.75,1.35))})).filter(b=>b.n!==lot.seller)};
+  render();
+}
+setInterval(()=>{
+  const a=S&&S.auction;if(!a||a.done)return;
+  const now=Date.now();
+  if(now>=a.ends){endAuction();return}
+  if(Math.random()<.22){const cand=a.bidders.filter(b=>b.n!==a.leader&&b.max>=a.bid+Math.max(10,Math.round(a.bid*.05/10)*10));if(cand.length){const b=pick(cand);const inc=Math.max(10,Math.round(a.bid*pick([.05,.08,.1])/10)*10);a.bid=Math.min(b.max,a.bid+inc);a.leader=b.n;a.log.unshift(`${b.n} deu ${fmt(a.bid)} CR`);a.ends=Math.max(a.ends,now+4500)}}
+  if(S.view==="leilao")renderRing();
+},450);
+function endAuction(){
+  const a=S.auction;a.done=true;const lot=a.lot;
+  if(!a.leader){a.msg="Sem lances acima do inicial. O lote volta para a lista.";}
+  else if(a.leader==="voce"){
+    if(S.cr<a.bid){a.msg="Saldo insuficiente para pagar o lance. Lote cancelado."}
+    else if(S.dogs.length>=capacidade()){a.msg="Seu canil está cheio. Amplie em Instalações. Lote cancelado."}
+    else{log("Arremate no leilão",`${lot.dog.nome} de ${lot.seller}`,-a.bid,lot.seller==="Criador oficial"?"loja":"mercado",lot.seller==="Criador oficial"?a.bid:Math.round(a.bid*CFG.taxaVenda));
+      if(lot.seller!=="Criador oficial")S.ledger[0].plat=Math.round(a.bid*CFG.taxaVenda);
+      lot.dog.owner="voce";lot.dog.id=++S.uid;S.dogs.push(lot.dog);S.lots=S.lots.filter(l=>l.id!==lot.id);a.msg=`Arrematado! ${lot.dog.nome} é seu por ${fmt(a.bid)} CR.`}
+  }else{
+    if(lot.seller==="voce"){const fee=Math.round(a.bid*CFG.taxaVenda);log("Venda no leilão",`${lot.dog.nome} para ${a.leader}`,a.bid-fee,"mercado",fee);S.lots=S.lots.filter(l=>l.id!==lot.id);a.msg=`Vendido para ${a.leader} por ${fmt(a.bid)} CR. Você recebe ${fmt(a.bid-fee)} CR (taxa de ${fmt(fee)}).`}
+    else{S.lots=S.lots.filter(l=>l.id!==lot.id);a.msg=`${a.leader} arrematou por ${fmt(a.bid)} CR.`}
+  }
+  if(!a.leader&&lot.seller==="voce"){S.lots=S.lots.filter(l=>l.id!==lot.id);lot.dog.owner="voce";S.dogs.push(lot.dog);a.msg="Ninguém deu lance. Seu galgo voltou para o canil."}
+  save();$("#hBal").textContent=fmt(S.cr)+" CR";if(S.view==="leilao")render();
+}
+
+// ----- Pacotes -----
 function vPacotes(){
-  return `<h2>Pacotes</h2><p class="sub">Cada pacote sorteia galgos com raridade e atributos aleatórios. Raridade maior começa com atributos mais altos.</p>
-  <div class="packs">${PACKS.map(p=>`<div class="pack"><h3>${p.nome}</h3><div class="meta">${p.qtd} galgo${p.qtd>1?"s":""} por pacote</div>
-   <div class="odds">${Object.entries(p.odds).map(([k,v])=>`<span class="r-${k}">${k}</span><span>${v}%</span>`).join("")}</div>
-   <div class="price">${fmt(p.preco)} CR</div><button class="btn pri" data-act="pack" data-id="${p.id}">Abrir pacote</button></div>`).join("")}</div>
-  ${S.lastPack.length?`<h2 style="font-size:18px">Último pacote</h2><div class="grid" style="margin-top:10px">${S.lastPack.map(d=>`<div class="reveal">${dogCard(d,"")}</div>`).join("")}</div>`:""}`;
+  return`<div class="sect"><div><div class="eyebrow">Loja oficial</div><h1 class="h-serif h-l">Pacotes de filhotes</h1><p class="lead">Cada pacote sorteia galgos com raridade e atributos aleatórios. As chances estão abertas em cada pacote. Seu canil tem ${S.dogs.length} de ${capacidade()} vagas.</p></div></div>
+  <div class="packs">${PACKS.map(p=>`<div class="pack ${p.id==="campeao"?"prem":""}"><div class="eyebrow">${p.qtd} galgo${p.qtd>1?"s":""} por pacote</div><div class="ph">${p.nome}</div><div class="odds">${Object.entries(p.odds).map(([k,v])=>`<span class="r-${k}">${k}</span><span>${v}%</span>`).join("")}</div><div class="row" style="justify-content:space-between;align-items:center;margin-top:auto"><span class="price">${fmt(p.preco)} CR</span><button class="btn gold" data-pack="${p.id}">Abrir pacote</button></div></div>`).join("")}</div>
+  ${S.lastPack.length?`<div class="eyebrow" style="margin-bottom:10px">Último pacote</div><div class="grid g-dogs">${S.lastPack.map((id,k)=>{const d=S.dogs.find(x=>x.id===id);return d?`<article class="card dogcard reveal" style="animation-delay:${k*.15}s" data-open="${d.id}"><div class="dc-top"><canvas data-thumb="${d.coat}" width="72" height="48"></canvas><div><div class="dc-name">${esc(d.nome)}</div><div class="dc-sub"><span class="r-${d.rar}">${d.rar}</span> · ${COATS[d.coat].n}</div></div><div class="dc-n"><b>${nota(d)}</b><span>nota</span></div></div><div class="stats">${STATS.map(([k,f])=>`<div class="st"><span>${f}</span><div class="bar"><i style="width:${d.s[k]}%"></i></div><span class="v">${d.s[k]}</span></div>`).join("")}</div></article>`:""}).join("")}</div>`:""}`;
 }
 
-// ===== Corrida =====
-function newRace(myDogId){
-  const lanes=[];const base=myDogId?nota(S.dogs.find(d=>d.id===myDogId)):55;
-  const myLane=myDogId?ri(0,5):-1;
-  for(let i=0;i<6;i++){
-    if(i===myLane){lanes.push({dog:S.dogs.find(d=>d.id===myDogId),owner:"voce",mine:true});continue}
-    let d;let tries=0;do{d=makeDog(rollRarity({Comum:45,Raro:38,"Épico":14,"Lendário":3}),pick(PLAYERS));tries++}while(Math.abs(nota(d)-base)>14&&tries<40);
-    lanes.push({dog:d,owner:d.owner,mine:false});
-  }
-  // apostas simuladas da torcida: tende a acertar um pouco quem é melhor
-  const crowd=lanes.map(l=>Math.round(rnd(40,160)*(nota(l.dog)/55)**3));
-  S.race={lanes,myLane,crowd,myBet:null,status:"pre",result:null,pos:null};
-}
-function pool(){const r=S.race;const t=r.crowd.slice();if(r.myBet)t[r.myBet.lane]+=r.myBet.amt;return t}
-function oddsFor(i){const p=pool();const tot=p.reduce((a,b)=>a+b,0);return (tot*(1-CFG.rakeAposta-CFG.donoVencedor))/p[i]}
-
-function vCorrida(){
-  const r=S.race;
-  const elig=S.dogs.filter(d=>d.hoje<CFG.corridasPorDia);
-  let h=`<h2>Corrida</h2><p class="sub">Seis galgos, seis boxes. Antes da largada você não vê os atributos dos rivais, só o nome e o dono. Quem não tem cão pode apostar em qualquer box.</p>`;
-  if(!r||r.status==="done"&&!r.result){}
-  if(!r){
-    h+=`<div class="panel"><div class="row">
-      <label class="f" for="pick">Seu galgo (inscrição ${CFG.inscricao} CR)<select id="pick"><option value="">Só assistir e apostar</option>${elig.map(d=>`<option value="${d.id}">${d.nome} · nota ${nota(d)} · ${d.hoje}/${CFG.corridasPorDia}</option>`).join("")}</select></label>
-      <button class="btn pri" data-act="montar">Montar corrida</button></div>
-      ${S.dogs.length&&!elig.length?`<p class="sub" style="margin:10px 0 0">Seus galgos já correram ${CFG.corridasPorDia}x hoje. Avance o dia no canil.</p>`:""}</div>`;
-    return h;
-  }
-  const p=pool();const tot=p.reduce((a,b)=>a+b,0);
-  h+=`<div class="tablewrap"><table class="lanes"><thead><tr><th>Box</th><th>Galgo</th><th>Dono</th><th>${r.status==="done"?"Nota":"Atributos"}</th><th style="text-align:right">Pote apostas</th><th style="text-align:right">Retorno est.</th>${r.status==="done"?"<th>Chegada</th><th></th>":""}</tr></thead><tbody>
-  ${r.lanes.map((l,i)=>`<tr><td>${trapEl(i)}</td><td class="${l.mine?"mine":""}">${l.dog.nome}</td><td>${l.mine?"você":l.owner}</td>
-   <td class="n">${r.status==="done"||l.mine?nota(l.dog):'<span class="hidden">? ? ?</span>'}</td>
-   <td class="n" style="text-align:right">${fmt(p[i])}</td><td class="n" style="text-align:right">${oddsFor(i).toFixed(2)}x</td>
-   ${r.status==="done"?`<td class="n">${r.pos[i]}º</td><td>${!l.mine?`<button class="btn sm" data-act="oferta" data-lane="${i}">Fazer oferta</button>`:""}</td>`:""}</tr>`).join("")}
-  </tbody></table></div>
-  <div class="trackbox"><canvas id="track" height="260"></canvas></div>`;
-  if(r.status==="pre"){
-    h+=`<div class="panel" style="margin-top:14px"><div class="row">
-      <label class="f" for="betlane">Apostar no box<select id="betlane">${r.lanes.map((l,i)=>`<option value="${i}">${i+1} · ${l.dog.nome}</option>`).join("")}</select></label>
-      <label class="f" for="betamt">Valor (CR)<input id="betamt" type="number" min="10" step="10" value="50" style="width:110px"></label>
-      <button class="btn" data-act="apostar">${r.myBet?"Trocar aposta":"Apostar"}</button>
-      <button class="btn pri" data-act="largar" style="margin-left:auto">Largar!</button></div>
-      ${r.myBet?`<p class="sub" style="margin:10px 0 0">Sua aposta: <b>${fmt(r.myBet.amt)} CR</b> no box ${r.myBet.lane+1}.</p>`:""}
-      <p class="sub" style="margin:10px 0 0">Pote total de apostas: ${fmt(tot)} CR. A plataforma retém ${CFG.rakeAposta*100}%, o dono do vencedor leva ${CFG.donoVencedor*100}% e o resto vai para quem acertou.</p></div>`;
-  }
-  if(r.status==="done"&&r.result){
-    h+=`<div class="res">${r.result.map(x=>`<div class="callout">${x}</div>`).join("")}</div>
-    <h2 style="font-size:18px;margin-top:18px">Atributos revelados</h2>
-    <div class="grid" style="margin-top:10px">${r.order.map(i=>dogCard(r.lanes[i].dog,`<div class="meta">${r.pos[i]}º lugar · ${r.lanes[i].mine?"seu galgo":r.lanes[i].owner}</div>`,i)).join("")}</div>
-    <div style="margin-top:16px"><button class="btn pri" data-act="nova">Nova corrida</button></div>`;
-  }
-  return h;
+// ----- Instalações -----
+function vInst(){
+  const F=S.fac;const pos={canil:[150,150,190,90],pista:[430,250,0,0],clinica:[520,95,150,80],cozinha:[150,320,130,70]};
+  const bld=(k,x,y,w,h)=>{const f=F[k],ob=f.ate>S.dia;return`<g>${ob?`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="url(#hatch)" stroke="#e6edf7" stroke-dasharray="6 5" stroke-width="2"/><rect x="${x+w/2-58}" y="${y+h/2-14}" width="116" height="28" rx="6" fill="#0b1d47" stroke="#e6edf7"/><text x="${x+w/2}" y="${y+h/2+5}" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#fff">Obras · noite ${f.ate}</text>`:`<rect x="${x+6}" y="${y+8}" width="${w}" height="${h}" rx="6" fill="rgba(0,0,0,.25)"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#8a5b3b"/><polygon points="${x-8},${y+h*.45} ${x+w/2},${y-18} ${x+w+8},${y+h*.45}" fill="#3b3f4a"/><rect x="${x}" y="${y+h*.45}" width="${w}" height="${h*.55}" fill="#9b6a47"/>${Array.from({length:Math.floor(w/34)},(_,i)=>`<rect x="${x+12+i*34}" y="${y+h*.58}" width="16" height="${h*.3}" fill="#2a1d14"/>`).join("")}`}
+    <circle cx="${x+w/2}" cy="${y-30}" r="13" fill="#0b1d47" stroke="#ffc83a" stroke-width="4"/><text x="${x+w/2}" y="${y-25}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700" font-size="13" fill="#ffc83a">${f.lvl}</text>
+    <text x="${x+w/2}" y="${y+h+24}" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="16" letter-spacing="1.5" fill="#fff">${FAC[k].n.toUpperCase()}</text></g>`};
+  const tl=F.pista.ate>S.dia;
+  const svg=`<svg viewBox="0 0 760 440" role="img" aria-label="Mapa do canil"><defs><pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#2e5a2a"/><rect width="5" height="10" fill="#355f2f"/></pattern><pattern id="mow" width="60" height="440" patternUnits="userSpaceOnUse"><rect width="30" height="440" fill="#3f7a35"/><rect x="30" width="30" height="440" fill="#447f39"/></pattern></defs>
+    <rect width="760" height="440" fill="url(#mow)"/>
+    <path d="M0 220 C150 200 260 240 380 230 S620 200 760 215" stroke="#c9a776" stroke-width="26" fill="none"/>
+    <path d="M300 0 C310 120 280 300 330 440" stroke="#c9a776" stroke-width="20" fill="none"/>
+    ${tl?`<rect x="420" y="260" width="300" height="140" rx="70" fill="url(#hatch)" stroke="#e6edf7" stroke-dasharray="6 5" stroke-width="2"/><rect x="512" y="316" width="116" height="28" rx="6" fill="#0b1d47" stroke="#e6edf7"/><text x="570" y="335" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#fff">Obras · noite ${F.pista.ate}</text>`:`<rect x="420" y="260" width="300" height="140" rx="70" fill="#c79d6b" stroke="#fff" stroke-width="3"/><rect x="450" y="290" width="240" height="80" rx="40" fill="#3f7a35" stroke="#fff" stroke-width="3"/>`}
+    <circle cx="570" cy="240" r="13" fill="#0b1d47" stroke="#ffc83a" stroke-width="4"/><text x="570" y="245" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700" font-size="13" fill="#ffc83a">${F.pista.lvl}</text>
+    <text x="570" y="425" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="16" letter-spacing="1.5" fill="#fff">PISTA DE TREINO</text>
+    ${bld("canil",...pos.canil)}${bld("clinica",...pos.clinica)}${bld("cozinha",...pos.cozinha)}
+    ${Array.from({length:22},(_,i)=>`<circle cx="${(i*97)%760}" cy="${i%2?14:-40}" r="${14+(i%3)*5}" fill="#24502a"/>`).join("")}</svg>`;
+  return`<div class="sect"><div><div class="eyebrow">Seu complexo</div><h1 class="h-serif h-l">Instalações do canil</h1><p class="lead">Melhorias aumentam vagas, aceleram o treino e a recuperação. Cada obra leva algumas noites.</p></div></div>
+  <div class="fgrid"><div class="map">${svg}</div><div class="card">${Object.keys(FAC).map(k=>{const f=F[k],c=FAC[k],ob=f.ate>S.dia,max=f.lvl>=3;return`<div class="fac"><div class="fac-h"><b>${c.n}</b><span class="lvl">${[1,2,3].map(i=>`<i class="${i<=f.lvl?"on":""}"></i>`).join("")}</span></div><div class="lead" style="margin:0">Agora: ${c.fx(f.lvl)}${max?"":` · Próximo nível: ${c.fx(f.lvl+1)}`}</div>
+    <div class="row" style="align-items:center">${ob?`<span class="chip warn">Em obras até a noite ${f.ate}</span>`:max?`<span class="chip ok">Nível máximo</span>`:`<button class="btn sm gold" data-up="${k}">Melhorar · ${fmt(c.cost[f.lvl])} CR · ${c.dias[f.lvl]} noite${c.dias[f.lvl]>1?"s":""}</button>`}</div></div>`}).join("")}</div></div>`;
 }
 
-function drawTrack(progress,phase){
-  const c=$("#track");if(!c)return;const dpr=window.devicePixelRatio||1;const w=c.parentElement.clientWidth;const H=260;
-  if(c.width!==Math.round(w*dpr)){c.width=Math.round(w*dpr);c.height=H*dpr;c.style.height=H+"px"}
-  const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.fillStyle="#d8b886";ctx.fillRect(0,0,w,H);
-  const lane=(H-20)/6,startX=46,endX=w-36;
-  for(let i=0;i<=6;i++){ctx.strokeStyle="rgba(120,88,40,.35)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,10+i*lane);ctx.lineTo(w,10+i*lane);ctx.stroke()}
-  // marcas de distância
-  ctx.fillStyle="rgba(90,60,25,.55)";ctx.font="10px JetBrains Mono, monospace";
-  [0.25,0.5,0.75].forEach(f=>{const x=startX+(endX-startX)*f;ctx.fillRect(x,10,1,H-20);ctx.fillText(Math.round(480*f)+"m",x+3,H-2)});
-  // chegada
-  for(let y=10;y<H-10;y+=6){for(let k=0;k<2;k++){ctx.fillStyle=((y/6+k)%2)?"#111":"#fff";ctx.fillRect(endX+k*6,y,6,6)}}
-  // boxes
-  ctx.fillStyle="#6b5233";ctx.fillRect(0,10,22,H-20);
-  const r=S.race;
-  r.lanes.forEach((l,i)=>{const y=10+lane*i+lane/2+3;const x=startX+(endX-startX-28)*Math.min(1,progress[i]);
-    drawDog(ctx,x,y,l.dog.coat,i,i+1,phase[i],1.05);
-    if(l.mine){ctx.fillStyle="#1b1408";ctx.font="bold 10px Archivo, sans-serif";ctx.fillText("VOCÊ",x-14,y-17)}});
-}
-
-function run(){
-  const r=S.race;r.status="running";render();
-  const dist=1000;const st=r.lanes.map(l=>({x:0,e:100,done:false,t:0,ph:Math.random()*6}));let tick=0;const fin=[];
-  function step(){
-    tick++;
-    st.forEach((s,i)=>{if(s.done)return;const d=r.lanes[i].dog.s;
-      let v=5+d.vel*.055;if(s.x<160)v+=d.lar*.03;
-      s.e-=Math.max(.15,1.25-d.est/110-d.res/260);if(s.e<45)v*=.72+Math.max(0,s.e)/160;
-      v*=1+(Math.random()-.5)*(.38-d.foc/340);v+=d.for*.006*(s.x>700?1:0);
-      s.x+=v*.55;s.ph+=.5+v*.03;if(s.x>=dist){s.x=dist;s.done=true;fin.push(i)}});
-    drawTrack(st.map(s=>s.x/dist),st.map(s=>s.ph));
-    if(fin.length<6&&tick<3000)requestAnimationFrame(step);else finish(fin);
-  }
-  requestAnimationFrame(step);
-}
-
-function finish(order){
-  const r=S.race;r.order=order;r.pos=[];order.forEach((ln,k)=>r.pos[ln]=k+1);
-  const res=[];const win=order[0],sec=order[1];
-  // inscrições
-  const potCorrida=CFG.inscricao*6;const rake=potCorrida*CFG.rakeCorrida;const liq=potCorrida-rake;
-  S.plat.corrida+=rake;S.premios+=liq;
-  r.lanes.forEach((l,i)=>{l.dog.corridas++;if(i===win)l.dog.vit++});
-  if(r.myLane>=0){
-    const p=r.pos[r.myLane];
-    if(r.myLane===win){log("Prêmio","1º lugar na corrida",liq*CFG.premio1);res.push(`Seu galgo venceu! Prêmio de <b>${fmt(liq*CFG.premio1)} CR</b>.`)}
-    else if(r.myLane===sec){log("Prêmio","2º lugar na corrida",liq*CFG.premio2);res.push(`Seu galgo chegou em 2º. Prêmio de <b>${fmt(liq*CFG.premio2)} CR</b>.`)}
-    else res.push(`Seu galgo chegou em ${p}º lugar.`);
-  }
-  // apostas
-  const p=pool();const tot=p.reduce((a,b)=>a+b,0);
-  const rakeA=tot*CFG.rakeAposta,dono=tot*CFG.donoVencedor,dist=tot-rakeA-dono;
-  S.plat.aposta+=rakeA;
-  if(r.lanes[win].mine){log("Bônus de dono","5% do pote de apostas (seu galgo venceu)",dono);res.push(`Como dono do vencedor você recebe <b>${fmt(dono)} CR</b> (${CFG.donoVencedor*100}% do pote de apostas).`)}
-  if(r.myBet){
-    if(r.myBet.lane===win){const g=dist*r.myBet.amt/p[win];log("Aposta ganha",`Box ${win+1}`,g);res.push(`Aposta certa! Você recebe <b>${fmt(g)} CR</b>.`)}
-    else res.push(`Sua aposta no box ${r.myBet.lane+1} não acertou.`);
-  }
-  res.push(`Plataforma reteve ${fmt(rake)} CR das inscrições e ${fmt(rakeA)} CR das apostas.`);
-  r.result=res;r.status="done";render();
-  setTimeout(()=>drawTrack(r.lanes.map(()=>1),r.lanes.map(()=>.6)),30);
-}
-
-// ===== Mercado =====
-function vMercado(){
-  return `<div class="secthead"><div><h2>Mercado</h2><p class="sub">Galgos à venda por outros jogadores. A plataforma cobra ${CFG.taxaMercado*100}% de cada venda, de quem vende.</p></div>
-  <button class="btn" data-act="refresh">Atualizar ofertas</button></div>
-  <div class="grid">${S.market.map((m,k)=>dogCard(m.dog,`<div class="meta"><span>Vendedor: <b>${m.dog.owner}</b></span></div>
-   <div class="acts" style="align-items:center"><span class="price" style="font-size:17px">${fmt(m.preco)} CR</span><button class="btn pri sm" style="margin-left:auto" data-act="comprar" data-k="${k}">Comprar</button></div>`)).join("")}</div>`;
-}
-
-// ===== Fluxo =====
+// ----- Fluxo -----
 function vFluxo(){
-  const P=S.plat;const totPlat=P.corrida+P.aposta+P.mercado+P.loja;
-  return `<h2>Fluxo do dinheiro</h2><p class="sub">Resumo de para onde vai cada crédito nesta demo. Os valores abaixo são os parâmetros que o advogado precisa avaliar.</p>
-  <div class="kpis">
-   <div class="kpi"><span>Plataforma · total</span><b>${fmt(totPlat)}</b></div>
-   <div class="kpi"><span>Loja (pacotes, ração, treino)</span><b>${fmt(P.loja)}</b></div>
-   <div class="kpi"><span>Taxa de corridas</span><b>${fmt(P.corrida)}</b></div>
-   <div class="kpi"><span>Taxa de apostas</span><b>${fmt(P.aposta)}</b></div>
-   <div class="kpi"><span>Taxa do mercado</span><b>${fmt(P.mercado)}</b></div>
-   <div class="kpi"><span>Prêmios de corrida pagos</span><b>${fmt(S.premios)}</b></div>
-  </div>
-  <div class="rules">
-   <div class="panel rule"><h4>Compras na loja</h4><ul><li>Pacotes, ração e treino: <b>100% para a plataforma</b></li><li>Galgos têm raridade sorteada (ver odds na aba Pacotes)</li></ul></div>
-   <div class="panel rule"><h4>Corrida (inscrições)</h4><ul><li>Inscrição: <b>${CFG.inscricao} CR</b> por galgo, 6 por corrida</li><li>Plataforma: <b>${CFG.rakeCorrida*100}%</b></li><li>1º lugar: <b>${CFG.premio1*100}%</b> do restante · 2º: <b>${CFG.premio2*100}%</b></li><li>Máximo de ${CFG.corridasPorDia} corridas por galgo por dia</li></ul></div>
-   <div class="panel rule"><h4>Apostas de espectadores</h4><ul><li>Modelo de pote (apostas mútuas)</li><li>Plataforma: <b>${CFG.rakeAposta*100}%</b> · dono do vencedor: <b>${CFG.donoVencedor*100}%</b></li><li>Restante dividido entre quem apostou no vencedor</li></ul></div>
-   <div class="panel rule"><h4>Mercado</h4><ul><li>Preço livre entre jogadores</li><li>Plataforma: <b>${CFG.taxaMercado*100}%</b> de cada venda, pago por quem vende</li><li>Oferta pelo vencedor ao final de cada corrida</li></ul></div>
-  </div>
-  <div class="callout" style="margin-bottom:16px">Carteira real (depósito e saque em USDT ou Pix) <b>não existe nesta demo</b>. Os créditos são fictícios e não podem ser sacados. Essa integração só entra depois da análise jurídica.</div>
-  <h2 style="font-size:18px">Extrato da sessão</h2>
-  ${S.ledger.length?`<div class="tablewrap"><table class="lanes"><thead><tr><th>Dia</th><th>Tipo</th><th>Descrição</th><th style="text-align:right">Você</th><th style="text-align:right">Plataforma</th></tr></thead><tbody>
-  ${S.ledger.slice(0,80).map(e=>`<tr><td class="n">${e.dia}</td><td>${e.tipo}</td><td>${e.desc}</td><td class="n ${e.valor>=0?"pos":"neg"}" style="text-align:right">${e.valor>=0?"+":""}${fmt(e.valor)}</td><td class="n" style="text-align:right">${e.plat?"+"+fmt(e.plat):"—"}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">Nenhuma movimentação ainda. Abra um pacote ou dispute uma corrida.</div>`}`;
+  const P=S.plat,tot=P.loja+P.servicos+P.corrida+P.aposta+P.mercado;
+  return`<div class="sect"><div><div class="eyebrow">Para a análise jurídica</div><h1 class="h-serif h-l">Fluxo do dinheiro</h1><p class="lead">Para onde vai cada crédito nesta demo. Os percentuais abaixo são os parâmetros do modelo que precisam ser avaliados.</p></div></div>
+  <div class="kpis"><div class="tile"><span>Plataforma · total</span><b>${fmt(tot)}</b></div><div class="tile"><span>Loja (pacotes, ração, leilão oficial)</span><b>${fmt(P.loja)}</b></div><div class="tile"><span>Serviços (treino, tratador, obras)</span><b>${fmt(P.servicos)}</b></div><div class="tile"><span>Taxa de corridas</span><b>${fmt(P.corrida)}</b></div><div class="tile"><span>Taxa de apostas</span><b>${fmt(P.aposta)}</b></div><div class="tile"><span>Taxa de vendas</span><b>${fmt(P.mercado)}</b></div><div class="tile"><span>Prêmios de corrida pagos</span><b>${fmt(S.premios)}</b></div></div>
+  <div class="rules"><div class="card"><h4>Loja e serviços</h4><ul><li>Pacotes, ração, treino, tratador e obras: <b>100% para a plataforma</b></li><li>Leilões do criador oficial: <b>100% para a plataforma</b></li><li>Raridade dos pacotes é sorteada, com chances publicadas</li></ul></div>
+  <div class="card"><h4>Inscrições de corrida</h4><ul><li>Inscrição por grade: <b>A6 ${GRADES[5].fee} até A1 ${GRADES[0].fee} CR</b></li><li>Plataforma: <b>${CFG.rakeCorrida*100}%</b> do total</li><li>1º lugar: <b>${CFG.premio1*100}%</b> do restante · 2º: <b>${CFG.premio2*100}%</b></li><li>Máximo de ${CFG.corridasDia} corridas por galgo por noite</li></ul></div>
+  <div class="card"><h4>Apostas de espectadores</h4><ul><li>Modelo de pote (apostas mútuas)</li><li>Plataforma: <b>${CFG.rakeAposta*100}%</b> · dono do vencedor: <b>${CFG.donoVencedor*100}%</b></li><li>Restante dividido entre quem acertou, proporcional ao valor</li></ul></div>
+  <div class="card"><h4>Vendas entre jogadores</h4><ul><li>Leilão com lances e oferta direta após a corrida</li><li>Plataforma: <b>${CFG.taxaVenda*100}%</b> de cada venda, paga por quem vende</li></ul></div></div>
+  <div class="callout" style="margin-bottom:18px">Não existe carteira real nesta demo: nada de depósito ou saque em USDT ou Pix. Os créditos são fictícios e não podem ser sacados. Essa integração só entra depois da análise jurídica.</div>
+  <div class="eyebrow" style="margin-bottom:8px">Extrato da sessão</div>
+  ${S.ledger.length?`<div class="card tw" style="padding:6px 8px"><table class="t"><thead><tr><th>Noite</th><th>Tipo</th><th>Descrição</th><th style="text-align:right">Você</th><th style="text-align:right">Plataforma</th></tr></thead><tbody>${S.ledger.slice(0,120).map(e=>`<tr><td class="n">${e.dia}</td><td>${e.tipo}</td><td>${esc(e.desc)}</td><td class="n ${e.v>=0?"pos-c":"neg-c"}" style="text-align:right">${e.v>=0?"+":""}${fmt(e.v)}</td><td class="n" style="text-align:right">${e.plat?"+"+fmt(e.plat):"—"}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">Nenhuma movimentação ainda.</div>`}`;
 }
 
-// ===== Render =====
-function render(){
-  $("#bal").innerHTML=fmt(S.cr)+"<small>CR</small>";renderTabs();
-  const v={canil:vCanil,pacotes:vPacotes,corrida:vCorrida,mercado:vMercado,fluxo:vFluxo}[S.tab]();
-  $("#main").innerHTML=v;mountAvatars();
-  if(S.tab==="corrida"&&S.race&&S.race.status!=="running"){const done=S.race.status==="done";drawTrack(S.race.lanes.map(()=>done?1:0),S.race.lanes.map((_,i)=>i))}
+// ================== AÇÕES ==================
+function novaNoite(){
+  const pend=S.races.filter(r=>r.status!=="fim"&&(r.mine.length||r.bet));pend.forEach(runHeadless);
+  S.dia++;
+  S.dogs.forEach(d=>{d.hoje=0;d.trein=0;d.cond=clamp(d.cond+ri(4,9),0,100);d.afi=clamp(d.afi-ri(0,3),40,100)});
+  Object.values(S.fac).forEach(f=>{if(f.ate&&f.ate<=S.dia){f.ate=0}});const rec=15+lv("clinica")*10;S.dogs.forEach(d=>d.fat=clamp(d.fat-rec,0,100));
+  genDay();if(Math.random()<.6)genLots();S.open=null;ENTRY.race=null;toast(`Noite ${S.dia}: galgos descansaram ${rec} de fadiga`);
 }
-function spend(v,tipo,desc,key){if(S.cr<v){toast("Créditos insuficientes. Use +500 de teste.");return false}log(tipo,desc,-v,key,v);return true}
-
 document.addEventListener("click",e=>{
-  const tab=e.target.closest("[data-tab]");if(tab){if(S.race&&S.race.status==="running")return;S.tab=tab.dataset.tab;render();return}
-  const b=e.target.closest("[data-act]");if(!b)return;const a=b.dataset.act;const id=+b.dataset.id;
-  const d=S.dogs.find(x=>x.id===id);
-  if(a==="topup"){log("Recarga de teste","Créditos fictícios",500);toast("+500 CR de teste");render()}
-  if(a==="pack"){const p=PACKS.find(x=>x.id===b.dataset.id);if(!spend(p.preco,"Pacote",p.nome,"loja"))return;
-    S.lastPack=Array.from({length:p.qtd},()=>makeDog(rollRarity(p.odds),"voce"));S.dogs.push(...S.lastPack);toast(S.lastPack.map(x=>x.rar).join(" + ")+"!");render()}
-  if(a==="racao"){if(!spend(CFG.racao,"Ração",d.nome,"loja"))return;const k=pick(STATS)[0];const g=ri(1,3);d.s[k]=Math.min(100,d.s[k]+g);toast(`${d.nome}: +${g} ${STATS.find(s=>s[0]===k)[2]}`);render()}
-  if(a==="treino"){const k=$("#tr-"+id).value;if(!spend(CFG.treino,"Treino",d.nome,"loja"))return;const g=ri(2,4);d.s[k]=Math.min(100,d.s[k]+g);toast(`${d.nome}: +${g} ${STATS.find(s=>s[0]===k)[2]}`);render()}
-  if(a==="vender"){const preco=Math.round(valor(d)*rnd(.95,1.15));const fee=Math.round(preco*CFG.taxaMercado);
-    S.dogs=S.dogs.filter(x=>x!==d);log("Venda no mercado",`${d.nome} para ${pick(PLAYERS)}`,preco-fee,"mercado",fee);toast(`Vendido por ${fmt(preco)} CR (taxa ${fmt(fee)})`);render()}
-  if(a==="novodia"){S.dia++;S.dogs.forEach(x=>x.hoje=0);toast(`Dia ${S.dia}: corridas liberadas`);render()}
-  if(a==="montar"){const v=+$("#pick").value||0;if(v){const dd=S.dogs.find(x=>x.id===v);if(!spend(CFG.inscricao,"Inscrição",dd.nome,null))return;S.ledger[0].plat=0;dd.hoje++}newRace(v);render()}
-  if(a==="apostar"){const r=S.race;const lane=+$("#betlane").value;const amt=Math.round(+$("#betamt").value||0);if(amt<10){toast("Aposta mínima: 10 CR");return}
-    if(r.myBet){log("Aposta cancelada",`Box ${r.myBet.lane+1}`,r.myBet.amt)}
-    if(!spend(amt,"Aposta",`Box ${lane+1} · ${r.lanes[lane].dog.nome}`,null))return;S.ledger[0].plat=0;r.myBet={lane,amt};render()}
-  if(a==="largar")run();
-  if(a==="nova"){S.race=null;render()}
-  if(a==="oferta"){const l=S.race.lanes[+b.dataset.lane];const preco=Math.round(valor(l.dog)*rnd(1.05,1.3));
-    if(Math.random()<.35){toast(`${l.owner} recusou a oferta`);b.disabled=true;return}
-    if(!spend(preco,"Compra (oferta)",`${l.dog.nome} de ${l.owner}`,null))return;
-    const fee=Math.round(preco*CFG.taxaMercado);S.plat.mercado+=fee;S.ledger[0].plat=fee;
-    l.dog.owner="voce";l.dog.hoje=CFG.corridasPorDia;S.dogs.push(l.dog);l.mine=true;toast(`Oferta aceita: ${l.dog.nome} é seu (${fmt(preco)} CR)`);render()}
-  if(a==="comprar"){const m=S.market[+b.dataset.k];if(!spend(m.preco,"Compra no mercado",`${m.dog.nome} de ${m.dog.owner}`,null))return;
-    const fee=Math.round(m.preco*CFG.taxaMercado);S.plat.mercado+=fee;S.ledger[0].plat=fee;m.dog.owner="voce";S.dogs.push(m.dog);S.market.splice(+b.dataset.k,1);toast(`${m.dog.nome} agora é seu`);render()}
-  if(a==="refresh"){seedMarket();render()}
+  const t=e.target.closest("button,[data-open]");if(!t)return;const ds=t.dataset;
+  if(ds.nav){if(ds.nav==="live"&&!S.open)return;S.view=ds.nav;render();window.scrollTo(0,0);return}
+  if(ds.open){S.sel=+ds.open;S.view="perfil";S.ptab="geral";render();window.scrollTo(0,0);return}
+  if(ds.ptab){S.ptab=ds.ptab;render();return}
+  if(ds.live){openLive(+ds.live);window.scrollTo(0,0);return}
+  if(ds.entry){ENTRY.race=ENTRY.race===+ds.entry?null:+ds.entry;ENTRY.handler=0;render();return}
+  if(ds.pdog){ENTRY.dog=+ds.pdog;render();return}
+  if(ds.phand){ENTRY.handler=+ds.phand;render();return}
+  if(ds.cam&&LIVE){LIVE.cam=ds.cam;t.parentElement.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b===t));return}
+  if(ds.spd&&LIVE){LIVE.speed=+ds.spd;t.parentElement.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b===t));return}
+  if(ds.betlane&&LIVE){const r=LIVE.r,lane=+ds.betlane,amt=Math.round(+($("#betamt")||{}).value||0);if(amt<10){toast("Aposta mínima: 10 CR");return}
+    if(r.bet)log("Aposta trocada",`Devolução box ${r.bet.lane+1}`,r.bet.amt);
+    if(!spend(amt,"Aposta",`Box ${lane+1} · ${r.grade} ${r.hora}`,null)){r.bet=null;renderCard();return}r.bet={lane,amt};save();$("#hBal").textContent=fmt(S.cr)+" CR";renderCard();toast(`${fmt(amt)} CR no box ${lane+1}`);return}
+  if(ds.oferta&&LIVE){const r=LIVE.r,x=r.res.dogs.find(d=>d.lane===+ds.oferta);if(!x)return;if(S.dogs.length>=capacidade()){toast("Canil cheio. Amplie em Instalações.");return}
+    const preco=Math.round(valor(x.dog)*rnd(1.05,1.3)/10)*10;if(Math.random()<.35){toast(`${x.owner} recusou a oferta de ${fmt(preco)} CR`);t.disabled=true;return}
+    if(!spend(preco,"Compra por oferta",`${x.dog.nome} de ${x.owner}`,null))return;const fee=Math.round(preco*CFG.taxaVenda);S.plat.mercado+=fee;S.ledger[0].plat=fee;
+    const nd=JSON.parse(JSON.stringify(x.dog));nd.id=++S.uid;nd.owner="voce";nd.hoje=CFG.corridasDia;nd.hist=nd.hist||[];nd.prog=nd.prog||{};nd.trein=0;S.dogs.push(nd);x.owner="você";save();$("#hBal").textContent=fmt(S.cr)+" CR";renderAfter();toast(`Oferta aceita: ${nd.nome} é seu por ${fmt(preco)} CR`);return}
+  if(ds.lot){const l=S.lots.find(x=>x.id===+ds.lot);if(l){if(S.auction&&!S.auction.done&&S.auction.lotId!==l.id){toast("Termine o pregão atual primeiro");return}if(!S.auction||S.auction.done||S.auction.lotId!==l.id)startAuction(l)}return}
+  if(ds.bid){const a=S.auction;if(!a||a.done||a.out)return;const v=+ds.bid;if(S.cr<a.bid+v){toast("Saldo insuficiente para esse lance");return}a.bid+=v;a.leader="voce";a.log.unshift(`Você deu ${fmt(a.bid)} CR`);a.ends=Math.max(a.ends,Date.now()+4500);renderRing();return}
+  if(ds.pack){const p=PACKS.find(x=>x.id===ds.pack);if(S.dogs.length+p.qtd>capacidade()){toast("Sem vagas no canil. Amplie em Instalações.");return}if(!spend(p.preco,"Pacote",p.nome,"loja"))return;
+    const ds2=Array.from({length:p.qtd},()=>makeDog(rollRar(p.odds),"voce"));S.dogs.push(...ds2);S.lastPack=ds2.map(d=>d.id);toast(ds2.map(d=>d.rar).join(" + ")+"!");render();return}
+  if(ds.up){const k=ds.up,f=S.fac[k],c=FAC[k];if(!spend(c.cost[f.lvl],"Obra",`${c.n} nível ${f.lvl+1}`,"servicos"))return;f.lvl++;f.ate=S.dia+c.dias[f.lvl-1];toast(`Obra iniciada: ${c.n}`);render();return}
+  const a=ds.act;if(!a)return;
+  const d=S.dogs.find(x=>x.id===+ds.id);
+  if(a==="topup"){log("Recarga de teste","Créditos fictícios",500);toast("+500 CR de teste");if(LIVE){$("#hBal").textContent=fmt(S.cr)+" CR";save()}else render()}
+  if(a==="novodia"){novaNoite();render()}
+  if(a==="racao"&&d){if(!spend(CFG.racao,"Ração",d.nome,"loja"))return;const k=pick(STATS);const g=ri(1,1+lv("cozinha"));d.s[k[0]]=Math.min(100,d.s[k[0]]+g);d.cond=clamp(d.cond+3,0,100);toast(`${d.nome}: +${g} ${k[1]}`);render()}
+  if(a==="treino"&&d){const k=ds.k;if(!spend(CFG.treino,"Treino",`${d.nome} · ${STATS.find(s=>s[0]===k)[1]}`,"servicos"))return;d.trein++;d.fat=clamp(d.fat+10,0,100);const gain=Math.round(ri(22,34)*(1+(lv("pista")-1)*.08));d.prog[k]=(d.prog[k]||0)+gain;let msg=`Progresso +${gain}%`;if(d.prog[k]>=100){d.prog[k]-=100;d.s[k]=Math.min(100,d.s[k]+3);msg=`${STATS.find(s=>s[0]===k)[1]} subiu +3!`}toast(msg);render()}
+  if(a==="leiloar"&&d){if(S.auction&&!S.auction.done){toast("Termine o pregão atual primeiro");return}const lot={id:++S.uid,dog:d,seller:"voce",base:Math.round(valor(d)*.7/10)*10};S.dogs=S.dogs.filter(x=>x!==d);S.lots.unshift(lot);S.view="leilao";startAuction(lot)}
+  if(a==="inscrever"){const r=S.races.find(x=>x.id===+ds.id);const dog=S.dogs.find(x=>x.id===ENTRY.dog);if(!r||!dog)return;const h=handlersFor(r)[ENTRY.handler];
+    if(S.cr<r.fee+h.fee){toast("Saldo insuficiente");return}
+    log("Inscrição",`${dog.nome} · ${r.grade} ${r.hora}`,-r.fee,null,0);if(h.fee)log("Tratador",`${h.n} · ${dog.nome}`,-h.fee,"servicos",h.fee);
+    r.mine.push({dogId:dog.id,handler:h.n,hb:h.b,ins:{...ENTRY.ins}});ENTRY.race=null;toast(`${dog.nome} inscrito na prova das ${r.hora}`);render()}
+  if(a==="largar"&&LIVE&&LIVE.phase==="apresentacao"){LIVE.phase="boxes";LIVE.boxT=0;lowerThird(null);headline("Nos boxes");say("Galgos entrando nos boxes. A lebre começa a correr...");setBonus(LIVE.r,LIVE.lanes);renderCard();t.disabled=true}
+  if(a==="desistir"){const au=S.auction;if(au&&!au.done){if(au.leader==="voce"){toast("Você é o maior lance agora");return}au.out=true;au.log.unshift("Você saiu do pregão");renderRing()}}
+  if(a==="fecharring"){S.auction=null;render()}
+  if(a==="novoslotes"){genLots();S.auction=null;render()}
 });
-window.addEventListener("resize",()=>{if(S.tab==="corrida"&&S.race&&S.race.status!=="running"){const done=S.race.status==="done";drawTrack(S.race.lanes.map(()=>done?1:0),S.race.lanes.map((_,i)=>i))}});
-document.fonts&&document.fonts.ready.then(render);
+document.addEventListener("change",e=>{const k=e.target.dataset.ins;if(k){ENTRY.ins[k]=e.target.value}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.dataset&&e.target.dataset.open){e.target.click()}});
+
+if(!load())fresh();
+if(S.view==="live"&&!S.races.some(r=>r.id===S.open))S.view="programa";
+if(S.auction&&!S.auction.done)S.auction.ends=Date.now()+6000;
 render();
+if(document.fonts)document.fonts.ready.then(()=>{if(S.view!=="live"&&S.view!=="perfil")render()});
 </script>
 </body>
 </html>
